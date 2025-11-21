@@ -1,5 +1,8 @@
 """Cases command module."""
 
+import json
+import sys
+
 import typer
 
 from ..client import TestRailClient
@@ -11,7 +14,7 @@ app = typer.Typer(help="Manage test cases")
 @app.command("list")
 def list_cases(
     ctx: typer.Context,
-    project_id: int = typer.Option(..., help="Project ID"),
+    project_id: int | None = typer.Option(None, help="Project ID"),
     suite_id: int | None = typer.Option(None, help="Suite ID filter"),
     section_id: int | None = typer.Option(None, help="Section ID filter"),
     created_after: str | None = typer.Option(None, help="Created after (ISO8601 or epoch)"),
@@ -20,6 +23,7 @@ def list_cases(
     updated_before: str | None = typer.Option(None, help="Updated before (ISO8601 or epoch)"),
     priority_id: str | None = typer.Option(None, help="Priority ID(s), comma-separated"),
     type_id: str | None = typer.Option(None, help="Type ID(s), comma-separated"),
+    case_ids: str | None = typer.Option(None, help="Case ID(s), comma-separated"),
     limit: int | None = typer.Option(None, help="Limit results"),
     offset: int | None = typer.Option(None, help="Offset for pagination"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
@@ -29,29 +33,40 @@ def list_cases(
     client: TestRailClient = ctx.obj["client"]
 
     try:
-        kwargs = {}
-        if suite_id:
-            kwargs["suite_id"] = suite_id
-        if section_id:
-            kwargs["section_id"] = section_id
-        if created_after:
-            kwargs["created_after"] = parse_datetime(created_after)
-        if created_before:
-            kwargs["created_before"] = parse_datetime(created_before)
-        if updated_after:
-            kwargs["updated_after"] = parse_datetime(updated_after)
-        if updated_before:
-            kwargs["updated_before"] = parse_datetime(updated_before)
-        if priority_id:
-            kwargs["priority_id"] = parse_list(priority_id)  # type: ignore[assignment]
-        if type_id:
-            kwargs["type_id"] = parse_list(type_id)  # type: ignore[assignment]
-        if limit:
-            kwargs["limit"] = str(limit)  # type: ignore[assignment]
-        if offset:
-            kwargs["offset"] = str(offset)  # type: ignore[assignment]
+        if case_ids:
+            case_ids_list = [int(x) for x in parse_list(case_ids)]
+            cases = []
+            for case_id in case_ids_list:
+                cases.append(client.get_case(case_id))
+        else:
+            if not project_id:
+                typer.echo("Error: Missing option '--project-id'.", err=True)
+                raise typer.Exit(code=1)
 
-        cases = client.get_cases(project_id, **kwargs)
+            kwargs = {}
+            if suite_id:
+                kwargs["suite_id"] = suite_id
+            if section_id:
+                kwargs["section_id"] = section_id
+            if created_after:
+                kwargs["created_after"] = parse_datetime(created_after)
+            if created_before:
+                kwargs["created_before"] = parse_datetime(created_before)
+            if updated_after:
+                kwargs["updated_after"] = parse_datetime(updated_after)
+            if updated_before:
+                kwargs["updated_before"] = parse_datetime(updated_before)
+            if priority_id:
+                kwargs["priority_id"] = parse_list(priority_id)  # type: ignore[assignment]
+            if type_id:
+                kwargs["type_id"] = parse_list(type_id)  # type: ignore[assignment]
+            if limit:
+                kwargs["limit"] = str(limit)  # type: ignore[assignment]
+            if offset:
+                kwargs["offset"] = str(offset)  # type: ignore[assignment]
+
+            cases = client.get_cases(project_id, **kwargs)
+
         output_result(cases, output, fields)
     except Exception as e:
         handle_api_error(e)
@@ -118,6 +133,9 @@ def update_case(
     priority_id: int | None = typer.Option(None, help="Priority ID"),
     estimate: str | None = typer.Option(None, help="Estimate"),
     refs: str | None = typer.Option(None, help="References"),
+    json_file: str | None = typer.Option(
+        None, "--json", "--file", help="JSON file path or '-' for stdin"
+    ),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Update a test case."""
@@ -125,6 +143,15 @@ def update_case(
 
     try:
         kwargs = {}
+
+        if json_file:
+            if json_file == "-":
+                data = json.load(sys.stdin)
+            else:
+                with open(json_file, encoding="utf-8") as f:
+                    data = json.load(f)
+            kwargs.update(data)
+
         if title:
             kwargs["title"] = title
         if template_id:

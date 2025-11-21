@@ -18,8 +18,7 @@ class StubTestRailClient:
         return [{"id": 1, "name": "Default"}]
 
     def get_sections(self, _project_id: int, suite_id: int | None = None):
-        if suite_id:
-            pass
+        _ = suite_id
         return list(self.sections.values())
 
     def get_section(self, section_id: int):
@@ -40,8 +39,7 @@ class StubTestRailClient:
         return payload
 
     def get_cases(self, _project_id: int, **kwargs):
-        if kwargs:
-            pass
+        _ = kwargs
         return self.cases_for_export
 
     def get_case(self, case_id: int):

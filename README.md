@@ -126,6 +126,9 @@ testrail cases list --project-id 1 --suite-id 5
 # Filter by priority and creation date
 testrail cases list --project-id 1 --priority-id 1,2 --created-after 2024-01-01
 
+# Filter by specific case IDs
+testrail cases list --project-id 1 --case-ids 123,124,125
+
 # Add a new test case
 testrail cases add \
   --section-id 10 \
@@ -136,6 +139,12 @@ testrail cases add \
 
 # Update existing test case
 testrail cases update 123 --title "Updated test title" --priority-id 1
+
+# Update using a JSON file (for complex fields)
+testrail cases update 123 --json update.json
+
+# Update via stdin
+echo '{"custom_preconds": "New preconditions"}' | testrail cases update 123 --file -
 
 # Delete test case (soft delete)
 testrail cases delete 123 --soft 1 --yes
