@@ -118,6 +118,23 @@ chmod 600 ~/.testrail-cli.yaml
 echo ".testrail-cli.yaml" >> .gitignore
 ```
 
+## CSV Import/Export Round-Trip
+
+Use a single CSV shape (one row per step) to export, edit, and re-import test cases:
+
+```bash
+# Export
+testrail cases export --project-id 1 --suite-id 5 --csv exported.csv
+
+# Re-import (create/update using the same file)
+testrail cases import --project-id 1 --suite-id 5 --csv exported.csv --template-id 2 --steps-field custom_steps_separated
+```
+
+- CSV must include a `case_id` column. Leave it blank to create, set it to update (steps are overwritten).
+- Each step is its own row; repeat the case fields for every row of the same case.
+- `--template-id` and `--steps-field` control where step data lands (e.g., `custom_steps_separated`, `custom_steps`, `custom_gherkin`).
+- You can export by filters (`suite-id`, `section-id`, `priority-id`, `type-id`) or explicit `--case-ids`, then edit and re-import without changing the columns.
+
 ## Environment Variables
 
 Set environment variables for temporary configuration or CI/CD:

@@ -11,6 +11,7 @@ fields:
   "Section": section
   "Priority": priority_id
   "Type": type_id
+  "Template ID": template_id
   "Automation Status": custom_automation_type
   "Test Estimate": estimate
   "References": refs
@@ -19,10 +20,14 @@ fields:
   "Steps": custom_steps
   "Expected Result": custom_expected
   "Automation ID": custom_automation_id
+  # Per-row step data (one row per step)
+  "Step": step
+  "Expected": expected
+  "Additional Info": additional_info
 
 # Notes:
-# - case_id is used to identify existing cases for updates
-# - title is required for creating new cases
+# - case_id column must be present; blank creates, populated updates
+# - title is required for creating new cases (when case_id is blank)
 # - Custom fields must match TestRail system names (e.g., custom_steps)
 # - Priority, type, and other enum fields should use IDs (1, 2, 3, etc.)
 # - Dates should be in ISO8601 format or epoch seconds

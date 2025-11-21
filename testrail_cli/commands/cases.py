@@ -217,3 +217,40 @@ def import_cases(
 
     except Exception as e:
         handle_api_error(e)
+
+
+@app.command("export")
+def export_cases(
+    ctx: typer.Context,
+    project_id: int = typer.Option(..., help="Project ID"),
+    csv: str = typer.Option(..., help="Path to CSV output file"),
+    suite_id: int | None = typer.Option(None, help="Suite ID filter"),
+    section_id: int | None = typer.Option(None, help="Section ID filter"),
+    priority_id: str | None = typer.Option(None, help="Priority ID(s), comma-separated"),
+    type_id: str | None = typer.Option(None, help="Type ID(s), comma-separated"),
+    case_ids: str | None = typer.Option(None, help="Case ID(s) to export, comma-separated"),
+) -> None:
+    """Export test cases to CSV (one row per step) compatible with import."""
+    from ..csv_import import export_cases_to_csv
+
+    client: TestRailClient = ctx.obj["client"]
+
+    try:
+        priority_ids = [int(x) for x in parse_list(priority_id)] if priority_id else None
+        type_ids = [int(x) for x in parse_list(type_id)] if type_id else None
+        case_ids_list = [int(x) for x in parse_list(case_ids)] if case_ids else None
+
+        result = export_cases_to_csv(
+            client=client,
+            project_id=project_id,
+            csv_path=csv,
+            suite_id=suite_id,
+            case_ids=case_ids_list,
+            section_id=section_id,
+            priority_ids=priority_ids,
+            type_ids=type_ids,
+        )
+        typer.echo(f"Exported rows: {result['exported']}")
+        typer.echo(f"CSV written to: {csv}")
+    except Exception as e:
+        handle_api_error(e)

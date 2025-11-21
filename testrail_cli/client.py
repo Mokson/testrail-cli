@@ -140,7 +140,9 @@ class TestRailClient:
     def update_case(self, case_id: int, **kwargs: Any) -> dict[str, Any]:
         return self.api.cases.update_case(case_id, **kwargs)  # type: ignore[no-any-return]
 
-    def update_cases(self, suite_id: int, case_ids: list[int], **kwargs: Any) -> list[dict[str, Any]]:
+    def update_cases(
+        self, suite_id: int, case_ids: list[int], **kwargs: Any
+    ) -> list[dict[str, Any]]:
         return self.api.cases.update_cases(suite_id, case_ids, **kwargs)  # type: ignore[no-any-return]
 
     def delete_case(self, case_id: int, soft: int | None = None) -> None:
@@ -207,7 +209,9 @@ class TestRailClient:
     def get_results(self, test_id: int, **kwargs: Any) -> list[dict[str, Any]]:
         return self.api.results.get_results(test_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_results_for_case(self, run_id: int, case_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+    def get_results_for_case(
+        self, run_id: int, case_id: int, **kwargs: Any
+    ) -> list[dict[str, Any]]:
         return self.api.results.get_results_for_case(run_id, case_id, **kwargs)  # type: ignore[no-any-return]
 
     def get_results_for_run(self, run_id: int, **kwargs: Any) -> list[dict[str, Any]]:
@@ -222,7 +226,9 @@ class TestRailClient:
     def add_results(self, run_id: int, results: list[dict[str, Any]]) -> list[dict[str, Any]]:
         return self.api.results.add_results(run_id, results)  # type: ignore[no-any-return]
 
-    def add_results_for_cases(self, run_id: int, results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def add_results_for_cases(
+        self, run_id: int, results: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         return self.api.results.add_results_for_cases(run_id, results)  # type: ignore[no-any-return]
 
     # Milestones

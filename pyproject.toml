@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "py-testrail-cli"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python-based CLI for complete TestRail REST API access and CSV-driven case management"
-authors = ["Maksym Moklyak <maksym.moklyak@gmail.com>"]
+authors = ["Mokson <maksym.moklyak@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/mokson/testrail-cli"

@@ -151,36 +151,43 @@ testrail cases import \
   --suite-id 5 \
   --csv test-cases.csv \
   --section-path "API/Authentication" \
+  --template-id 2 \
+  --steps-field custom_steps_separated \
   --create-missing-sections \
   --mapping field-mapping.yaml
 ```
 
-**Example CSV** (`test-cases.csv`):
+**Example CSV (one row per step, `case_id` required)** (`test-cases.csv`):
 
 ```csv
-Title,Priority,Estimate,Steps,Expected Result,References
-Login with valid credentials,High,2m,1. Enter username\n2. Enter password\n3. Click Login,User is logged in,JIRA-101
-Login with invalid password,High,2m,1. Enter username\n2. Enter wrong password\n3. Click Login,Error message shown,JIRA-102
+case_id,title,section,priority_id,type_id,template_id,estimate,refs,step,expected,additional_info,mission,goals,preconds
+,Checkout happy path,Checkout/Payments,2,1,3m,REQ-400,Open checkout,Form renders,,,
+,Checkout happy path,Checkout/Payments,2,1,3m,REQ-400,Enter valid card,Payment succeeds,,,
+,Exploratory Session,Exploratory,2,1,30m,REQ-600,,,,,Test App,Find Bugs,
 ```
 
-**Example Mapping** (`field-mapping.yaml`):
+- `case_id` column is mandatory; leave it blank to create, set it to update/overwrite (including steps).
+- Specify the TestRail template via `--template-id` (overrides any CSV value).
+- Each step is a separate CSV row repeating the case fields; the importer groups rows by `case_id` (or `title`+`section` when `case_id` is empty).
+- `--steps-field` controls which TestRail field receives the steps (`custom_steps_separated` by default, or `custom_steps`/`custom_gherkin` for text/BDD templates).
+- **Supported Template Fields**: The importer automatically maps standard CSV columns to TestRail custom fields:
+  - `mission` -> `custom_mission` (Exploratory templates)
+  - `goals` -> `custom_goals` (Exploratory templates)
+  - `preconds` / `preconditions` -> `custom_preconds` (Steps templates)
 
-```yaml
-csv_to_testrail:
-  Title: title
-  Priority: priority_name
-  Estimate: estimate
-  Steps: custom_steps
-  Expected Result: custom_expected
-  References: refs
+**Export to CSV (same format as import)**:
 
-priority_mapping:
-  High: 1
-  Medium: 2
-  Low: 3
+```bash
+testrail cases export \
+  --project-id 1 \
+  --suite-id 5 \
+  --csv exported-cases.csv \
+  --priority-id 1,2
 ```
 
-See `examples/example-cases.csv` and `examples/example-mapping.yaml` for complete examples.
+You can export by filters (suite/section/priority/type) or explicit `--case-ids`, edit the CSV, and re-import with `cases import`.
+
+See `examples/example-cases.csv` and `examples/example-mapping.yaml` for the reference format.
 
 ### Test Runs and Results
 

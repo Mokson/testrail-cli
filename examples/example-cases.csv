@@ -1,9 +1,17 @@
-case_id,title,section,priority_id,type_id,estimate,refs
-,Login with valid credentials,Authentication/Login,2,1,1m,REQ-123
-,Login with invalid password,Authentication/Login,2,1,30s,REQ-123
-,Login with invalid username,Authentication/Login,2,1,30s,REQ-123
-,Logout successfully,Authentication/Logout,2,1,15s,REQ-124
-,API endpoint returns 200 OK,API/Health,1,1,10s,REQ-200
-,API handles rate limiting,API/Rate Limiting,1,1,1m,REQ-201
-,Database connection pool,Performance/Database,3,2,5m,REQ-300
-,Page load under 2 seconds,Performance/Frontend,3,2,2m,REQ-301
+case_id,title,section,priority_id,type_id,template_id,estimate,refs,step,expected,additional_info,mission,goals,preconds
+,Login with valid credentials,Authentication/Login,2,1,,1m,REQ-123,,,,,,
+,Login with invalid password,Authentication/Login,2,1,,30s,REQ-123,,,,,,
+,Login with invalid username,Authentication/Login,2,1,,30s,REQ-123,,,,,,
+,Logout successfully,Authentication/Logout,2,1,,15s,REQ-124,,,,,,
+,API endpoint returns 200 OK,API/Health,1,1,,10s,REQ-200,,,,,,
+,API handles rate limiting,API/Rate Limiting,1,1,,1m,REQ-201,,,,,,
+,Database connection pool,Performance/Database,3,2,,5m,REQ-300,,,,,,
+,Page load under 2 seconds,Performance/Frontend,3,2,,2m,REQ-301,,,,,,
+,Checkout with multi-step payment,Checkout/Payments,2,1,2,3m,REQ-400,Open checkout,Form renders,,,
+,Checkout with multi-step payment,Checkout/Payments,2,1,2,3m,REQ-400,Enter valid card,Payment succeeds,,,
+,Checkout with multi-step payment,Checkout/Payments,2,1,2,3m,REQ-400,Verify receipt page,Receipt displayed,,,
+,Search handles pagination,Search/Results,2,1,2,2m,REQ-401,Open search page,Results shown,Browser Chrome,,
+,Search handles pagination,Search/Results,2,1,2,2m,REQ-401,Navigate to page 2,Second page loaded,Browser Chrome,,
+,Exploratory note-taking,Exploratory/Sessions,2,1,,15m,REQ-500,Review dashboard,Identify gaps,Notes go here,,,
+,Exploratory Session Example,Exploratory/Sessions,2,8,,30m,REQ-600,,,,,Test new dashboard features,Verify data accuracy,
+,Steps with Preconditions,Functional/Login,2,1,2,5m,REQ-700,Login,Success,,,,User exists
