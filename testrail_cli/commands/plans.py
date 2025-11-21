@@ -1,9 +1,9 @@
 """Plans command module."""
 
 import typer
-from typing import Optional
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error, parse_datetime
+from ..io import handle_api_error, output_result, parse_datetime
 
 app = typer.Typer(help="Manage test plans")
 
@@ -12,19 +12,15 @@ app = typer.Typer(help="Manage test plans")
 def list_plans(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
-    created_after: Optional[str] = typer.Option(
-        None, help="Created after (ISO8601 or epoch)"
-    ),
-    created_before: Optional[str] = typer.Option(
-        None, help="Created before (ISO8601 or epoch)"
-    ),
-    is_completed: Optional[int] = typer.Option(
+    created_after: str | None = typer.Option(None, help="Created after (ISO8601 or epoch)"),
+    created_before: str | None = typer.Option(None, help="Created before (ISO8601 or epoch)"),
+    is_completed: int | None = typer.Option(
         None, help="Filter by completion (0=active, 1=completed)"
     ),
-    limit: Optional[int] = typer.Option(None, help="Limit results"),
-    offset: Optional[int] = typer.Option(None, help="Offset for pagination"),
+    limit: int | None = typer.Option(None, help="Limit results"),
+    offset: int | None = typer.Option(None, help="Offset for pagination"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List test plans."""
     client: TestRailClient = ctx.obj["client"]
@@ -53,7 +49,7 @@ def get_plan(
     ctx: typer.Context,
     plan_id: int = typer.Argument(..., help="Plan ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """Get a specific test plan by ID."""
     client: TestRailClient = ctx.obj["client"]
@@ -70,8 +66,8 @@ def add_plan(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
     name: str = typer.Option(..., help="Plan name"),
-    description: Optional[str] = typer.Option(None, help="Plan description"),
-    milestone_id: Optional[int] = typer.Option(None, help="Milestone ID"),
+    description: str | None = typer.Option(None, help="Plan description"),
+    milestone_id: int | None = typer.Option(None, help="Milestone ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Create a new test plan."""
@@ -94,9 +90,9 @@ def add_plan(
 def update_plan(
     ctx: typer.Context,
     plan_id: int = typer.Argument(..., help="Plan ID"),
-    name: Optional[str] = typer.Option(None, help="Plan name"),
-    description: Optional[str] = typer.Option(None, help="Plan description"),
-    milestone_id: Optional[int] = typer.Option(None, help="Milestone ID"),
+    name: str | None = typer.Option(None, help="Plan name"),
+    description: str | None = typer.Option(None, help="Plan description"),
+    milestone_id: int | None = typer.Option(None, help="Milestone ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Update a test plan."""

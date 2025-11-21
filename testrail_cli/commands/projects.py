@@ -1,9 +1,9 @@
 """Projects command module."""
 
 import typer
-from typing import Optional
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error
+from ..io import handle_api_error, output_result
 
 app = typer.Typer(help="Manage TestRail projects")
 
@@ -11,11 +11,11 @@ app = typer.Typer(help="Manage TestRail projects")
 @app.command("list")
 def list_projects(
     ctx: typer.Context,
-    is_completed: Optional[int] = typer.Option(
+    is_completed: int | None = typer.Option(
         None, help="Filter by completion status (0=active, 1=completed)"
     ),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List all projects."""
     client: TestRailClient = ctx.obj["client"]
@@ -32,7 +32,7 @@ def get_project(
     ctx: typer.Context,
     project_id: int = typer.Argument(..., help="Project ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """Get a specific project by ID."""
     client: TestRailClient = ctx.obj["client"]
@@ -48,9 +48,9 @@ def get_project(
 def add_project(
     ctx: typer.Context,
     name: str = typer.Option(..., help="Project name"),
-    announcement: Optional[str] = typer.Option(None, help="Project announcement"),
-    show_announcement: Optional[bool] = typer.Option(None, help="Show announcement"),
-    suite_mode: Optional[int] = typer.Option(
+    announcement: str | None = typer.Option(None, help="Project announcement"),
+    show_announcement: bool | None = typer.Option(None, help="Show announcement"),
+    suite_mode: int | None = typer.Option(
         None, help="Suite mode (1=single, 2=single+baselines, 3=multiple)"
     ),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
@@ -77,10 +77,10 @@ def add_project(
 def update_project(
     ctx: typer.Context,
     project_id: int = typer.Argument(..., help="Project ID"),
-    name: Optional[str] = typer.Option(None, help="Project name"),
-    announcement: Optional[str] = typer.Option(None, help="Project announcement"),
-    show_announcement: Optional[bool] = typer.Option(None, help="Show announcement"),
-    is_completed: Optional[bool] = typer.Option(None, help="Mark as completed"),
+    name: str | None = typer.Option(None, help="Project name"),
+    announcement: str | None = typer.Option(None, help="Project announcement"),
+    show_announcement: bool | None = typer.Option(None, help="Show announcement"),
+    is_completed: bool | None = typer.Option(None, help="Mark as completed"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Update a project."""
@@ -113,9 +113,7 @@ def delete_project(
     client: TestRailClient = ctx.obj["client"]
 
     if not yes:
-        confirm = typer.confirm(
-            f"Are you sure you want to delete project {project_id}?"
-        )
+        confirm = typer.confirm(f"Are you sure you want to delete project {project_id}?")
         if not confirm:
             raise typer.Abort()
 

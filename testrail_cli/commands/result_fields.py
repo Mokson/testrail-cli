@@ -1,9 +1,9 @@
 """Result fields command module."""
 
 import typer
-from typing import Optional
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error
+from ..io import handle_api_error, output_result
 
 app = typer.Typer(help="Manage result fields")
 
@@ -12,7 +12,7 @@ app = typer.Typer(help="Manage result fields")
 def list_result_fields(
     ctx: typer.Context,
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List all result fields."""
     client: TestRailClient = ctx.obj["client"]

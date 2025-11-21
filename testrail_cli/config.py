@@ -1,25 +1,30 @@
 """Configuration management for TestRail CLI."""
 
 import os
+import shutil
 import sys
 import tempfile
-import shutil
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Any
 
 import yaml
 
 
-def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
+def load_config(config_path: str | None = None) -> dict[str, Any]:
     """Load configuration from file.
 
     Searches for config in:
     1. Provided path (if given)
     2. ./.testrail-cli.yaml (repo-local)
-    3. ~/.testrail-cli.yaml (user home)
+    3. ~/.testrail-cli.yaml (user home) when allowed
 
     Returns empty dict if no config found.
     """
+    # Allow disabling home config (e.g., during tests) via env or pytest context
+    use_home_config = not os.getenv("TESTRAIL_CLI_DISABLE_HOME_CONFIG") and not os.getenv(
+        "PYTEST_CURRENT_TEST"
+    )
+
     if config_path:
         path = Path(config_path)
         if not path.exists():
@@ -32,17 +37,18 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
         return _read_yaml(local_config)
 
     # Try user home
-    home_config = Path.home() / ".testrail-cli.yaml"
-    if home_config.exists():
-        return _read_yaml(home_config)
+    if use_home_config:
+        home_config = Path.home() / ".testrail-cli.yaml"
+        if home_config.exists():
+            return _read_yaml(home_config)
 
     return {}
 
 
-def _read_yaml(path: Path) -> Dict[str, Any]:
+def _read_yaml(path: Path) -> dict[str, Any]:
     """Read and parse YAML config file."""
     try:
-        with open(path, "r") as f:
+        with open(path) as f:
             config = yaml.safe_load(f) or {}
 
         # Check file permissions on POSIX systems
@@ -64,19 +70,19 @@ def _read_yaml(path: Path) -> Dict[str, Any]:
 
         return config
     except yaml.YAMLError as e:
-        raise ValueError(f"Invalid YAML in config file {path}: {e}")
+        raise ValueError(f"Invalid YAML in config file {path}: {e}") from e
 
 
 def resolve_config(
-    profile: Optional[str] = None,
-    url: Optional[str] = None,
-    email: Optional[str] = None,
-    password: Optional[str] = None,
-    timeout: Optional[int] = None,
-    proxy: Optional[str] = None,
+    profile: str | None = None,
+    url: str | None = None,
+    email: str | None = None,
+    password: str | None = None,
+    timeout: int | None = None,
+    proxy: str | None = None,
     insecure: bool = False,
-    config_path: Optional[str] = None,
-) -> Dict[str, Any]:
+    config_path: str | None = None,
+) -> dict[str, Any]:
     """Resolve final configuration from precedence: CLI flags > env vars > config file.
 
     Returns dict with keys: url, email, password, timeout, proxy, verify
@@ -91,9 +97,7 @@ def resolve_config(
     resolved = {
         "url": url or os.getenv("TESTRAIL_URL") or profile_config.get("url"),
         "email": email or os.getenv("TESTRAIL_EMAIL") or profile_config.get("email"),
-        "password": password
-        or os.getenv("TESTRAIL_PASSWORD")
-        or profile_config.get("password"),
+        "password": password or os.getenv("TESTRAIL_PASSWORD") or profile_config.get("password"),
         "timeout": timeout or profile_config.get("timeout") or 30,
         "proxy": proxy or profile_config.get("proxy"),
         "verify": not insecure and profile_config.get("verify", True),
@@ -101,9 +105,7 @@ def resolve_config(
 
     # Validate required fields
     if not resolved["url"]:
-        raise ValueError(
-            "TestRail URL is required (via --url, TESTRAIL_URL env, or config file)"
-        )
+        raise ValueError("TestRail URL is required (via --url, TESTRAIL_URL env, or config file)")
     if not resolved["email"]:
         raise ValueError(
             "TestRail email is required (via --email, TESTRAIL_EMAIL env, or config file)"
@@ -128,7 +130,7 @@ def init_config(
     # Load existing config if present
     existing_config = {}
     if config_path.exists():
-        with open(config_path, "r") as f:
+        with open(config_path) as f:
             existing_config = yaml.safe_load(f) or {}
 
     # Ensure profiles key exists
@@ -146,7 +148,7 @@ def init_config(
 
     # Write config atomically using temp file
     config_dir = config_path.parent
-    with tempfile.NamedTemporaryFile(mode='w', dir=config_dir, delete=False, suffix='.tmp') as f:
+    with tempfile.NamedTemporaryFile(mode="w", dir=config_dir, delete=False, suffix=".tmp") as f:
         temp_path = Path(f.name)
         yaml.safe_dump(existing_config, f, default_flow_style=False, sort_keys=False)
 

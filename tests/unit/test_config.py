@@ -1,10 +1,10 @@
 """Unit tests for configuration management."""
 
-import os
-import pytest
 from pathlib import Path
-from unittest.mock import patch, mock_open
-from testrail_cli.config import load_config, resolve_config, init_config
+
+import pytest
+
+from testrail_cli.config import init_config, load_config, resolve_config
 
 
 class TestLoadConfig:

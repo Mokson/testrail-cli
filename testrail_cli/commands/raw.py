@@ -1,11 +1,12 @@
 """Raw API passthrough command."""
 
-import typer
 import json
-from typing import Optional, List
 from pathlib import Path
+
+import typer
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error
+from ..io import handle_api_error, output_result
 
 app = typer.Typer(help="Raw API endpoint passthrough")
 
@@ -13,21 +14,13 @@ app = typer.Typer(help="Raw API endpoint passthrough")
 @app.command()
 def raw(
     ctx: typer.Context,
-    endpoint: str = typer.Option(
-        ..., help="API endpoint (e.g., 'get_projects', 'add_case/123')"
-    ),
+    endpoint: str = typer.Option(..., help="API endpoint (e.g., 'get_projects', 'add_case/123')"),
     method: str = typer.Option("GET", help="HTTP method (GET, POST, DELETE)"),
-    params: Optional[List[str]] = typer.Option(
-        None, help="Query params as key=value (repeatable)"
-    ),
-    data: Optional[List[str]] = typer.Option(
-        None, help="Request body data as key=value (repeatable)"
-    ),
-    payload_file: Optional[str] = typer.Option(
-        None, help="Path to JSON/YAML file for request body"
-    ),
+    params: list[str] | None = typer.Option(None, help="Query params as key=value (repeatable)"),  # noqa: B008
+    data: list[str] | None = typer.Option(None, help="Request body data as key=value (repeatable)"),  # noqa: B008
+    payload_file: str | None = typer.Option(None, help="Path to JSON/YAML file for request body"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """Make a raw API call to any TestRail endpoint.
 
@@ -59,7 +52,7 @@ def raw(
             if not file_path.exists():
                 typer.echo(f"Error: Payload file not found: {payload_file}", err=True)
                 raise typer.Exit(1)
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 if file_path.suffix in [".yaml", ".yml"]:
                     import yaml
 

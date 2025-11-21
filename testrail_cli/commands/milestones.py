@@ -1,9 +1,9 @@
 """Milestones command module."""
 
 import typer
-from typing import Optional
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error, parse_datetime
+from ..io import handle_api_error, output_result, parse_datetime
 
 app = typer.Typer(help="Manage milestones")
 
@@ -12,11 +12,11 @@ app = typer.Typer(help="Manage milestones")
 def list_milestones(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
-    is_completed: Optional[int] = typer.Option(
+    is_completed: int | None = typer.Option(
         None, help="Filter by completion (0=active, 1=completed)"
     ),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List milestones in a project."""
     client: TestRailClient = ctx.obj["client"]
@@ -37,7 +37,7 @@ def get_milestone(
     ctx: typer.Context,
     milestone_id: int = typer.Argument(..., help="Milestone ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """Get a specific milestone by ID."""
     client: TestRailClient = ctx.obj["client"]
@@ -54,10 +54,10 @@ def add_milestone(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
     name: str = typer.Option(..., help="Milestone name"),
-    description: Optional[str] = typer.Option(None, help="Milestone description"),
-    due_on: Optional[str] = typer.Option(None, help="Due date (ISO8601 or epoch)"),
-    parent_id: Optional[int] = typer.Option(None, help="Parent milestone ID"),
-    start_on: Optional[str] = typer.Option(None, help="Start date (ISO8601 or epoch)"),
+    description: str | None = typer.Option(None, help="Milestone description"),
+    due_on: str | None = typer.Option(None, help="Due date (ISO8601 or epoch)"),
+    parent_id: int | None = typer.Option(None, help="Parent milestone ID"),
+    start_on: str | None = typer.Option(None, help="Start date (ISO8601 or epoch)"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Create a new milestone."""
@@ -84,11 +84,11 @@ def add_milestone(
 def update_milestone(
     ctx: typer.Context,
     milestone_id: int = typer.Argument(..., help="Milestone ID"),
-    name: Optional[str] = typer.Option(None, help="Milestone name"),
-    description: Optional[str] = typer.Option(None, help="Milestone description"),
-    due_on: Optional[str] = typer.Option(None, help="Due date (ISO8601 or epoch)"),
-    is_completed: Optional[bool] = typer.Option(None, help="Mark as completed"),
-    start_on: Optional[str] = typer.Option(None, help="Start date (ISO8601 or epoch)"),
+    name: str | None = typer.Option(None, help="Milestone name"),
+    description: str | None = typer.Option(None, help="Milestone description"),
+    due_on: str | None = typer.Option(None, help="Due date (ISO8601 or epoch)"),
+    is_completed: bool | None = typer.Option(None, help="Mark as completed"),
+    start_on: str | None = typer.Option(None, help="Start date (ISO8601 or epoch)"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Update a milestone."""
@@ -123,9 +123,7 @@ def delete_milestone(
     client: TestRailClient = ctx.obj["client"]
 
     if not yes:
-        confirm = typer.confirm(
-            f"Are you sure you want to delete milestone {milestone_id}?"
-        )
+        confirm = typer.confirm(f"Are you sure you want to delete milestone {milestone_id}?")
         if not confirm:
             raise typer.Abort()
 

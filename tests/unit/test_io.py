@@ -1,10 +1,10 @@
 """Unit tests for I/O utilities."""
 
 import json
-import pytest
+
 from testrail_cli.io import (
-    output_json,
     filter_fields,
+    output_json,
 )
 
 

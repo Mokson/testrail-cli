@@ -1,9 +1,9 @@
 """Tests command module."""
 
 import typer
-from typing import Optional
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error, parse_list
+from ..io import handle_api_error, output_result, parse_list
 
 app = typer.Typer(help="Manage tests")
 
@@ -12,11 +12,11 @@ app = typer.Typer(help="Manage tests")
 def list_tests(
     ctx: typer.Context,
     run_id: int = typer.Option(..., help="Run ID"),
-    status_id: Optional[str] = typer.Option(None, help="Status ID(s), comma-separated"),
-    limit: Optional[int] = typer.Option(None, help="Limit results"),
-    offset: Optional[int] = typer.Option(None, help="Offset for pagination"),
+    status_id: str | None = typer.Option(None, help="Status ID(s), comma-separated"),
+    limit: int | None = typer.Option(None, help="Limit results"),
+    offset: int | None = typer.Option(None, help="Offset for pagination"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List tests in a run."""
     client: TestRailClient = ctx.obj["client"]
@@ -41,7 +41,7 @@ def get_test(
     ctx: typer.Context,
     test_id: int = typer.Argument(..., help="Test ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """Get a specific test by ID."""
     client: TestRailClient = ctx.obj["client"]

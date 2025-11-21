@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "testrail-cli"
+name = "py-testrail-cli"
 version = "0.1.0"
 description = "Python-based CLI for complete TestRail REST API access and CSV-driven case management"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["Maksym Moklyak <maksym.moklyak@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/mokson/testrail-cli"
@@ -18,6 +18,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Testing",
 ]
+packages = [{include = "testrail_cli"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"

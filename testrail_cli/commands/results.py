@@ -1,10 +1,11 @@
 """Results command module."""
 
-import typer
 import json
-from typing import Optional
+
+import typer
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error, parse_datetime, parse_list
+from ..io import handle_api_error, output_result, parse_datetime, parse_list
 
 app = typer.Typer(help="Manage test results")
 
@@ -13,11 +14,11 @@ app = typer.Typer(help="Manage test results")
 def list_results(
     ctx: typer.Context,
     test_id: int = typer.Option(..., help="Test ID"),
-    status_id: Optional[str] = typer.Option(None, help="Status ID(s), comma-separated"),
-    limit: Optional[int] = typer.Option(None, help="Limit results"),
-    offset: Optional[int] = typer.Option(None, help="Offset for pagination"),
+    status_id: str | None = typer.Option(None, help="Status ID(s), comma-separated"),
+    limit: int | None = typer.Option(None, help="Limit results"),
+    offset: int | None = typer.Option(None, help="Offset for pagination"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List results for a test."""
     client: TestRailClient = ctx.obj["client"]
@@ -42,11 +43,11 @@ def list_results_for_case(
     ctx: typer.Context,
     run_id: int = typer.Option(..., help="Run ID"),
     case_id: int = typer.Option(..., help="Case ID"),
-    status_id: Optional[str] = typer.Option(None, help="Status ID(s), comma-separated"),
-    limit: Optional[int] = typer.Option(None, help="Limit results"),
-    offset: Optional[int] = typer.Option(None, help="Offset for pagination"),
+    status_id: str | None = typer.Option(None, help="Status ID(s), comma-separated"),
+    limit: int | None = typer.Option(None, help="Limit results"),
+    offset: int | None = typer.Option(None, help="Offset for pagination"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List results for a test case in a run."""
     client: TestRailClient = ctx.obj["client"]
@@ -70,17 +71,13 @@ def list_results_for_case(
 def list_results_for_run(
     ctx: typer.Context,
     run_id: int = typer.Option(..., help="Run ID"),
-    status_id: Optional[str] = typer.Option(None, help="Status ID(s), comma-separated"),
-    created_after: Optional[str] = typer.Option(
-        None, help="Created after (ISO8601 or epoch)"
-    ),
-    created_before: Optional[str] = typer.Option(
-        None, help="Created before (ISO8601 or epoch)"
-    ),
-    limit: Optional[int] = typer.Option(None, help="Limit results"),
-    offset: Optional[int] = typer.Option(None, help="Offset for pagination"),
+    status_id: str | None = typer.Option(None, help="Status ID(s), comma-separated"),
+    created_after: str | None = typer.Option(None, help="Created after (ISO8601 or epoch)"),
+    created_before: str | None = typer.Option(None, help="Created before (ISO8601 or epoch)"),
+    limit: int | None = typer.Option(None, help="Limit results"),
+    offset: int | None = typer.Option(None, help="Offset for pagination"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List results for a run."""
     client: TestRailClient = ctx.obj["client"]
@@ -109,12 +106,10 @@ def add_result(
     ctx: typer.Context,
     test_id: int = typer.Option(..., help="Test ID"),
     status_id: int = typer.Option(..., help="Status ID"),
-    comment: Optional[str] = typer.Option(None, help="Result comment"),
-    version: Optional[str] = typer.Option(None, help="Version tested"),
-    elapsed: Optional[str] = typer.Option(
-        None, help="Elapsed time (e.g., '30s', '1m')"
-    ),
-    defects: Optional[str] = typer.Option(None, help="Defects (comma-separated)"),
+    comment: str | None = typer.Option(None, help="Result comment"),
+    version: str | None = typer.Option(None, help="Version tested"),
+    elapsed: str | None = typer.Option(None, help="Elapsed time (e.g., '30s', '1m')"),
+    defects: str | None = typer.Option(None, help="Defects (comma-separated)"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Add a result for a test."""
@@ -143,10 +138,10 @@ def add_result_for_case(
     run_id: int = typer.Option(..., help="Run ID"),
     case_id: int = typer.Option(..., help="Case ID"),
     status_id: int = typer.Option(..., help="Status ID"),
-    comment: Optional[str] = typer.Option(None, help="Result comment"),
-    version: Optional[str] = typer.Option(None, help="Version tested"),
-    elapsed: Optional[str] = typer.Option(None, help="Elapsed time"),
-    defects: Optional[str] = typer.Option(None, help="Defects (comma-separated)"),
+    comment: str | None = typer.Option(None, help="Result comment"),
+    version: str | None = typer.Option(None, help="Version tested"),
+    elapsed: str | None = typer.Option(None, help="Elapsed time"),
+    defects: str | None = typer.Option(None, help="Defects (comma-separated)"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Add a result for a case in a run."""
@@ -181,11 +176,11 @@ def add_results_bulk(
 
     try:
         try:
-            with open(results_file, "r") as f:
+            with open(results_file) as f:
                 results = json.load(f)
         except FileNotFoundError:
             typer.echo(f"Error: Results file not found: {results_file}", err=True)
-            raise typer.Exit(1)
+            raise typer.Exit(1) from None
 
         if not isinstance(results, list):
             raise ValueError("Results file must contain a JSON array")
@@ -208,11 +203,11 @@ def add_results_bulk_for_cases(
 
     try:
         try:
-            with open(results_file, "r") as f:
+            with open(results_file) as f:
                 results = json.load(f)
         except FileNotFoundError:
             typer.echo(f"Error: Results file not found: {results_file}", err=True)
-            raise typer.Exit(1)
+            raise typer.Exit(1) from None
 
         if not isinstance(results, list):
             raise ValueError("Results file must contain a JSON array")

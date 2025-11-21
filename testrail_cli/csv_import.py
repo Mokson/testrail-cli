@@ -3,13 +3,14 @@
 import csv
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any
+
 import yaml
 
 from .client import TestRailClient
 
 
-def load_mapping(mapping_path: str) -> Dict[str, Any]:
+def load_mapping(mapping_path: str) -> dict[str, Any]:
     """Load field mapping from YAML or JSON file.
 
     Args:
@@ -19,16 +20,14 @@ def load_mapping(mapping_path: str) -> Dict[str, Any]:
         Mapping dictionary
     """
     path = Path(mapping_path)
-    with open(path, "r") as f:
+    with open(path) as f:
         if path.suffix in [".yaml", ".yml"]:
             return yaml.safe_load(f) or {}
         else:
             return json.load(f)
 
 
-def apply_mapping(
-    row: Dict[str, str], mapping: Optional[Dict[str, Any]]
-) -> Dict[str, Any]:
+def apply_mapping(row: dict[str, str], mapping: dict[str, Any] | None) -> dict[str, Any]:
     """Apply field mapping to a CSV row.
 
     Args:
@@ -62,7 +61,7 @@ def apply_mapping(
     return mapped
 
 
-def validate_row(row: Dict[str, Any], row_num: int) -> List[str]:
+def validate_row(row: dict[str, Any], row_num: int) -> list[str]:
     """Validate a CSV row.
 
     Args:
@@ -75,10 +74,10 @@ def validate_row(row: Dict[str, Any], row_num: int) -> List[str]:
     errors = []
 
     # Check for required fields
-    if "case_id" not in row or not row.get("case_id"):
-        # New case - title is required
-        if "title" not in row or not row.get("title") or not row.get("title").strip():
-            errors.append(f"Row {row_num}: Missing or empty 'title' field for new cases")
+    if ("case_id" not in row or not row.get("case_id")) and (
+        "title" not in row or not row.get("title") or not row.get("title").strip()
+    ):
+        errors.append(f"Row {row_num}: Missing or empty 'title' field for new cases")
 
     return errors
 
@@ -86,8 +85,8 @@ def validate_row(row: Dict[str, Any], row_num: int) -> List[str]:
 def resolve_suite(
     client: TestRailClient,
     project_id: int,
-    suite_id: Optional[int],
-    suite_name: Optional[str],
+    suite_id: int | None,
+    suite_name: str | None,
 ) -> int:
     """Resolve suite ID from ID or name.
 
@@ -122,9 +121,9 @@ def resolve_section(
     client: TestRailClient,
     project_id: int,
     suite_id: int,
-    section_path: Optional[str],
+    section_path: str | None,
     create_missing: bool = False,
-) -> Optional[int]:
+) -> int | None:
     """Resolve section ID from path.
 
     Args:
@@ -169,7 +168,7 @@ def resolve_section(
     return current_section["id"] if current_section else None
 
 
-def chunk_list(items: List[Any], chunk_size: int) -> List[List[Any]]:
+def chunk_list(items: list[Any], chunk_size: int) -> list[list[Any]]:
     """Split list into chunks.
 
     Args:
@@ -186,13 +185,13 @@ def import_cases_from_csv(
     client: TestRailClient,
     project_id: int,
     csv_path: str,
-    suite_id: Optional[int] = None,
-    suite_name: Optional[str] = None,
-    section_path: Optional[str] = None,
-    mapping_path: Optional[str] = None,
+    suite_id: int | None = None,
+    suite_name: str | None = None,
+    section_path: str | None = None,
+    mapping_path: str | None = None,
     create_missing_sections: bool = False,
     chunk_size: int = 50,
-) -> Dict[str, int]:
+) -> dict[str, int]:
     """Import test cases from CSV file.
 
     Args:
@@ -230,7 +229,7 @@ def import_cases_from_csv(
     error_details = []
 
     try:
-        with open(csv_path, "r") as f:
+        with open(csv_path) as f:
             reader = csv.DictReader(f)
             for idx, row in enumerate(reader, start=2):  # Start at 2 (row 1 is header)
                 # Apply mapping
@@ -249,7 +248,7 @@ def import_cases_from_csv(
             "created": 0,
             "updated": 0,
             "errors": 1,
-            "error_details": [f"CSV file not found: {csv_path}"]
+            "error_details": [f"CSV file not found: {csv_path}"],
         }
 
     # Split into creates and updates

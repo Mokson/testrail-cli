@@ -1,6 +1,7 @@
 """Config command for initializing TestRail CLI configuration."""
 
 import typer
+
 from ..config import init_config
 from ..io import console
 
@@ -23,4 +24,4 @@ def config_init(
         console.print(f"[dim]Profile: {profile}[/dim]")
     except Exception as e:
         console.print(f"[red]Failed to save configuration: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None

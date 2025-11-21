@@ -1,10 +1,11 @@
 """Attachments command module."""
 
-import typer
 import os
-from typing import Optional
+
+import typer
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error
+from ..io import handle_api_error, output_result
 
 app = typer.Typer(help="Manage attachments")
 
@@ -23,11 +24,9 @@ def add_attachment_to_result(
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
 
-        with open(file_path, 'rb') as f:
-            files = {'attachment': (os.path.basename(file_path), f)}
-            result = client.call(
-                f"add_attachment_to_result/{result_id}", "POST", files=files
-            )
+        with open(file_path, "rb") as f:
+            files = {"attachment": (os.path.basename(file_path), f)}
+            result = client.call(f"add_attachment_to_result/{result_id}", "POST", files=files)
         output_result(result, output, None)
     except Exception as e:
         handle_api_error(e)
@@ -47,11 +46,9 @@ def add_attachment_to_case(
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
 
-        with open(file_path, 'rb') as f:
-            files = {'attachment': (os.path.basename(file_path), f)}
-            result = client.call(
-                f"add_attachment_to_case/{case_id}", "POST", files=files
-            )
+        with open(file_path, "rb") as f:
+            files = {"attachment": (os.path.basename(file_path), f)}
+            result = client.call(f"add_attachment_to_case/{case_id}", "POST", files=files)
         output_result(result, output, None)
     except Exception as e:
         handle_api_error(e)
@@ -71,11 +68,9 @@ def add_attachment_to_run(
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
 
-        with open(file_path, 'rb') as f:
-            files = {'attachment': (os.path.basename(file_path), f)}
-            result = client.call(
-                f"add_attachment_to_run/{run_id}", "POST", files=files
-            )
+        with open(file_path, "rb") as f:
+            files = {"attachment": (os.path.basename(file_path), f)}
+            result = client.call(f"add_attachment_to_run/{run_id}", "POST", files=files)
         output_result(result, output, None)
     except Exception as e:
         handle_api_error(e)
@@ -95,11 +90,9 @@ def add_attachment_to_plan(
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
 
-        with open(file_path, 'rb') as f:
-            files = {'attachment': (os.path.basename(file_path), f)}
-            result = client.call(
-                f"add_attachment_to_plan/{plan_id}", "POST", files=files
-            )
+        with open(file_path, "rb") as f:
+            files = {"attachment": (os.path.basename(file_path), f)}
+            result = client.call(f"add_attachment_to_plan/{plan_id}", "POST", files=files)
         output_result(result, output, None)
     except Exception as e:
         handle_api_error(e)
@@ -110,7 +103,7 @@ def list_attachments_for_case(
     ctx: typer.Context,
     case_id: int = typer.Option(..., help="Case ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List attachments for a case."""
     client: TestRailClient = ctx.obj["client"]
@@ -127,7 +120,7 @@ def list_attachments_for_run(
     ctx: typer.Context,
     run_id: int = typer.Option(..., help="Run ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List attachments for a run."""
     client: TestRailClient = ctx.obj["client"]

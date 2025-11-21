@@ -1,9 +1,9 @@
 """Runs command module."""
 
 import typer
-from typing import Optional
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error, parse_datetime, parse_list
+from ..io import handle_api_error, output_result, parse_datetime, parse_list
 
 app = typer.Typer(help="Manage test runs")
 
@@ -12,21 +12,17 @@ app = typer.Typer(help="Manage test runs")
 def list_runs(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
-    suite_id: Optional[int] = typer.Option(None, help="Suite ID filter"),
-    milestone_id: Optional[int] = typer.Option(None, help="Milestone ID filter"),
-    created_after: Optional[str] = typer.Option(
-        None, help="Created after (ISO8601 or epoch)"
-    ),
-    created_before: Optional[str] = typer.Option(
-        None, help="Created before (ISO8601 or epoch)"
-    ),
-    is_completed: Optional[int] = typer.Option(
+    suite_id: int | None = typer.Option(None, help="Suite ID filter"),
+    milestone_id: int | None = typer.Option(None, help="Milestone ID filter"),
+    created_after: str | None = typer.Option(None, help="Created after (ISO8601 or epoch)"),
+    created_before: str | None = typer.Option(None, help="Created before (ISO8601 or epoch)"),
+    is_completed: int | None = typer.Option(
         None, help="Filter by completion (0=active, 1=completed)"
     ),
-    limit: Optional[int] = typer.Option(None, help="Limit results"),
-    offset: Optional[int] = typer.Option(None, help="Offset for pagination"),
+    limit: int | None = typer.Option(None, help="Limit results"),
+    offset: int | None = typer.Option(None, help="Offset for pagination"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List test runs."""
     client: TestRailClient = ctx.obj["client"]
@@ -59,7 +55,7 @@ def get_run(
     ctx: typer.Context,
     run_id: int = typer.Argument(..., help="Run ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """Get a specific test run by ID."""
     client: TestRailClient = ctx.obj["client"]
@@ -75,15 +71,13 @@ def get_run(
 def add_run(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
-    suite_id: Optional[int] = typer.Option(None, help="Suite ID"),
-    name: Optional[str] = typer.Option(None, help="Run name"),
-    description: Optional[str] = typer.Option(None, help="Run description"),
-    milestone_id: Optional[int] = typer.Option(None, help="Milestone ID"),
-    assignedto_id: Optional[int] = typer.Option(None, help="Assigned to user ID"),
-    include_all: Optional[bool] = typer.Option(None, help="Include all test cases"),
-    case_ids: Optional[str] = typer.Option(
-        None, help="Specific case IDs (comma-separated)"
-    ),
+    suite_id: int | None = typer.Option(None, help="Suite ID"),
+    name: str | None = typer.Option(None, help="Run name"),
+    description: str | None = typer.Option(None, help="Run description"),
+    milestone_id: int | None = typer.Option(None, help="Milestone ID"),
+    assignedto_id: int | None = typer.Option(None, help="Assigned to user ID"),
+    include_all: bool | None = typer.Option(None, help="Include all test cases"),
+    case_ids: str | None = typer.Option(None, help="Specific case IDs (comma-separated)"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Create a new test run."""
@@ -116,13 +110,11 @@ def add_run(
 def update_run(
     ctx: typer.Context,
     run_id: int = typer.Argument(..., help="Run ID"),
-    name: Optional[str] = typer.Option(None, help="Run name"),
-    description: Optional[str] = typer.Option(None, help="Run description"),
-    milestone_id: Optional[int] = typer.Option(None, help="Milestone ID"),
-    include_all: Optional[bool] = typer.Option(None, help="Include all test cases"),
-    case_ids: Optional[str] = typer.Option(
-        None, help="Specific case IDs (comma-separated)"
-    ),
+    name: str | None = typer.Option(None, help="Run name"),
+    description: str | None = typer.Option(None, help="Run description"),
+    milestone_id: int | None = typer.Option(None, help="Milestone ID"),
+    include_all: bool | None = typer.Option(None, help="Include all test cases"),
+    case_ids: str | None = typer.Option(None, help="Specific case IDs (comma-separated)"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Update a test run."""

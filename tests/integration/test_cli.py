@@ -1,9 +1,8 @@
 """Integration tests for CLI commands."""
 
-import pytest
 from typer.testing import CliRunner
-from testrail_cli.__main__ import cli
 
+from testrail_cli.__main__ import cli
 
 runner = CliRunner()
 

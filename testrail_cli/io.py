@@ -2,32 +2,31 @@
 
 import json
 import sys
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Callable
+from typing import Any
+
+from rich import box
 from rich.console import Console
 from rich.table import Table
-from rich import box
-
 
 console = Console()
 
 
-def output_json(data: Any, fields: Optional[List[str]] = None) -> None:
+def output_json(data: Any, fields: list[str] | None = None) -> None:
     """Output data as JSON.
 
     Args:
         data: Data to output (dict, list, or primitive)
         fields: Optional field filter (for dicts/lists of dicts)
     """
-    if fields and isinstance(data, (list, dict)):
+    if fields and isinstance(data, list | dict):
         data = filter_fields(data, fields)
 
     console.print_json(json.dumps(data, indent=2, default=str))
 
 
-def output_table(
-    data: List[Dict[str, Any]], fields: Optional[List[str]] = None
-) -> None:
+def output_table(data: list[dict[str, Any]], fields: list[str] | None = None) -> None:
     """Output data as a formatted table.
 
     Args:
@@ -86,21 +85,33 @@ def extract_paginated_data(data: Any) -> Any:
         return data
 
     # Check if response has pagination metadata
-    has_pagination_metadata = all(k in data for k in ['offset', 'limit', 'size'])
+    has_pagination_metadata = all(k in data for k in ["offset", "limit", "size"])
 
     if has_pagination_metadata:
         # Find the array key (should be the one that's not metadata)
-        metadata_keys = {'offset', 'limit', 'size', '_links'}
+        metadata_keys = {"offset", "limit", "size", "_links"}
         for key, value in data.items():
             if key not in metadata_keys and isinstance(value, list):
                 return value
 
     # Fallback: check known paginated response keys
     paginated_keys = [
-        'projects', 'cases', 'runs', 'plans', 'tests', 'results',
-        'milestones', 'sections', 'suites', 'users', 'statuses',
-        'priorities', 'case_types', 'case_fields', 'result_fields',
-        'attachments'
+        "projects",
+        "cases",
+        "runs",
+        "plans",
+        "tests",
+        "results",
+        "milestones",
+        "sections",
+        "suites",
+        "users",
+        "statuses",
+        "priorities",
+        "case_types",
+        "case_fields",
+        "result_fields",
+        "attachments",
     ]
 
     for key in paginated_keys:
@@ -110,9 +121,7 @@ def extract_paginated_data(data: Any) -> Any:
     return data
 
 
-def output_result(
-    data: Any, format: str = "json", fields: Optional[str] = None
-) -> None:
+def output_result(data: Any, format: str = "json", fields: str | None = None) -> None:
     """Output result in specified format.
 
     Args:
@@ -139,7 +148,7 @@ def output_result(
         raise ValueError(f"Unknown output format: {format}")
 
 
-def filter_fields(data: Any, fields: List[str]) -> Any:
+def filter_fields(data: Any, fields: list[str]) -> Any:
     """Filter data to include only specified fields.
 
     Args:
@@ -149,20 +158,20 @@ def filter_fields(data: Any, fields: List[str]) -> Any:
     Returns:
         Filtered data
     """
+    if not fields:
+        return data
+
     if isinstance(data, dict):
         return {k: v for k, v in data.items() if k in fields}
     elif isinstance(data, list):
-        return [
-            filter_fields(item, fields) if isinstance(item, dict) else item
-            for item in data
-        ]
+        return [filter_fields(item, fields) if isinstance(item, dict) else item for item in data]
     else:
         return data
 
 
 def paginate_all(
     fetch_func: Callable, limit: int = 250, offset: int = 0, **kwargs
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Paginate through all results using limit/offset.
 
     Args:
@@ -224,19 +233,17 @@ def parse_datetime(value: str) -> int:
         timestamp = int(dt.timestamp())
         # Validate reasonable range
         if timestamp < 0 or timestamp > 4102444800:
-            raise ValueError(
-                f"Invalid date: {value}. Must be between 1970 and 2100."
-            )
+            raise ValueError(f"Invalid date: {value}. Must be between 1970 and 2100.")
         return timestamp
     except ValueError as e:
         if "Invalid date" in str(e):
             raise
         raise ValueError(
             f"Invalid datetime format: {value}. Use ISO8601 (e.g., '2024-01-01T00:00:00Z') or epoch seconds."
-        )
+        ) from e
 
 
-def parse_list(value: str) -> List[str]:
+def parse_list(value: str) -> list[str]:
     """Parse comma-separated string to list.
 
     Args:
@@ -274,9 +281,7 @@ def handle_api_error(e: Exception) -> None:
         # Try to parse error body
         if body:
             try:
-                body_str = (
-                    body.decode("utf-8") if isinstance(body, bytes) else str(body)
-                )
+                body_str = body.decode("utf-8") if isinstance(body, bytes) else str(body)
                 error_data = json.loads(body_str)
                 if "error" in error_data:
                     error_msg = f"HTTP {status_code}: {error_data['error']}"

@@ -1,6 +1,7 @@
 """TestRail API client wrapper."""
 
-from typing import Any, Dict, Optional, Literal
+from typing import Any, Literal
+
 from testrail_api import TestRailAPI
 
 
@@ -14,7 +15,7 @@ class TestRailClient:
         password: str,
         timeout: int = 30,
         verify: bool = True,
-        proxy: Optional[str] = None,
+        proxy: str | None = None,
     ):
         """Initialize TestRail client.
 
@@ -43,9 +44,9 @@ class TestRailClient:
         self,
         endpoint: str,
         method: Literal["GET", "POST", "DELETE"] = "GET",
-        params: Optional[Dict[str, Any]] = None,
-        data: Optional[Dict[str, Any]] = None,
-        files: Optional[Dict[str, Any]] = None,
+        params: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+        files: dict[str, Any] | None = None,
     ) -> Any:
         """Raw API call passthrough for unmodeled endpoints.
 
@@ -74,14 +75,12 @@ class TestRailClient:
             else:
                 return self.api.send_post(url_path, data or {})
         elif method == "DELETE":
-            return self.api.send_post(
-                url_path, data or {}
-            )  # TestRail uses POST for deletes
+            return self.api.send_post(url_path, data or {})  # TestRail uses POST for deletes
         else:
             raise ValueError(f"Unsupported method: {method}")
 
     # Projects
-    def get_projects(self, is_completed: Optional[int] = None) -> list:
+    def get_projects(self, is_completed: int | None = None) -> list:
         return self.api.projects.get_projects(is_completed=is_completed)
 
     def get_project(self, project_id: int) -> dict:
@@ -113,7 +112,7 @@ class TestRailClient:
         return self.api.suites.delete_suite(suite_id)
 
     # Sections
-    def get_sections(self, project_id: int, suite_id: Optional[int] = None) -> list:
+    def get_sections(self, project_id: int, suite_id: int | None = None) -> list:
         return self.api.sections.get_sections(project_id, suite_id=suite_id)
 
     def get_section(self, section_id: int) -> dict:
@@ -144,10 +143,10 @@ class TestRailClient:
     def update_cases(self, suite_id: int, case_ids: list, **kwargs) -> list:
         return self.api.cases.update_cases(suite_id, case_ids, **kwargs)
 
-    def delete_case(self, case_id: int, soft: Optional[int] = None):
+    def delete_case(self, case_id: int, soft: int | None = None):
         return self.api.cases.delete_case(case_id, soft=soft)
 
-    def delete_cases(self, suite_id: int, case_ids: list, soft: Optional[int] = None):
+    def delete_cases(self, suite_id: int, case_ids: list, soft: int | None = None):
         return self.api.cases.delete_cases(suite_id, case_ids, soft=soft)
 
     # Runs

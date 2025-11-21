@@ -1,9 +1,9 @@
 """Suites command module."""
 
 import typer
-from typing import Optional
+
 from ..client import TestRailClient
-from ..io import output_result, handle_api_error
+from ..io import handle_api_error, output_result
 
 app = typer.Typer(help="Manage test suites")
 
@@ -13,7 +13,7 @@ def list_suites(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """List all suites in a project."""
     client: TestRailClient = ctx.obj["client"]
@@ -30,7 +30,7 @@ def get_suite(
     ctx: typer.Context,
     suite_id: int = typer.Argument(..., help="Suite ID"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
-    fields: Optional[str] = typer.Option(None, help="Comma-separated field list"),
+    fields: str | None = typer.Option(None, help="Comma-separated field list"),
 ) -> None:
     """Get a specific suite by ID."""
     client: TestRailClient = ctx.obj["client"]
@@ -47,7 +47,7 @@ def add_suite(
     ctx: typer.Context,
     project_id: int = typer.Option(..., help="Project ID"),
     name: str = typer.Option(..., help="Suite name"),
-    description: Optional[str] = typer.Option(None, help="Suite description"),
+    description: str | None = typer.Option(None, help="Suite description"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Create a new suite."""
@@ -68,8 +68,8 @@ def add_suite(
 def update_suite(
     ctx: typer.Context,
     suite_id: int = typer.Argument(..., help="Suite ID"),
-    name: Optional[str] = typer.Option(None, help="Suite name"),
-    description: Optional[str] = typer.Option(None, help="Suite description"),
+    name: str | None = typer.Option(None, help="Suite name"),
+    description: str | None = typer.Option(None, help="Suite description"),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Update a suite."""
