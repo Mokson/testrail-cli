@@ -2,8 +2,8 @@
 
 [![Tests](https://github.com/mokson/testrail-cli/workflows/Tests/badge.svg)](https://github.com/mokson/testrail-cli/actions/workflows/test.yml)
 [![Lint](https://github.com/mokson/testrail-cli/workflows/Lint/badge.svg)](https://github.com/mokson/testrail-cli/actions/workflows/lint.yml)
-[![PyPI version](https://badge.fury.io/py/testrail-cli.svg)](https://badge.fury.io/py/testrail-cli)
-[![Python Version](https://img.shields.io/pypi/pyversions/testrail-cli.svg)](https://pypi.org/project/testrail-cli/)
+[![PyPI version](https://badge.fury.io/py/py-testrail-cli.svg)](https://badge.fury.io/py/py-testrail-cli)
+[![Python Version](https://img.shields.io/pypi/pyversions/py-testrail-cli.svg)](https://pypi.org/project/py-testrail-cli/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
@@ -25,20 +25,22 @@ A powerful Python-based CLI for complete TestRail REST API access with CSV-drive
 ### Using pip
 
 ```bash
-pip install testrail-cli
+pip install py-testrail-cli
 ```
 
 ### Using pipx (recommended for CLI tools)
 
 ```bash
-pipx install testrail-cli
+pipx install py-testrail-cli
 ```
 
 ### Using Poetry
 
 ```bash
-poetry add testrail-cli
+poetry add py-testrail-cli
 ```
+
+> The installed executable remains `testrail`.
 
 ### From source
 
