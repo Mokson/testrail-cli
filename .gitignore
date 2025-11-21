@@ -205,3 +205,11 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# TestRail CLI configuration files (contain API keys)
+.testrail-cli.yaml
+.testrail-cli-*.yaml
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,35 @@
+# CSV Field Mapping Example
+#
+# Maps CSV column headers to TestRail field names
+# Useful when your CSV uses different column names than TestRail expects
+
+fields:
+  # Basic field mappings (CSV column -> TestRail field)
+  "Test ID": case_id
+  "Test Title": title
+  "Test Description": custom_preconds
+  "Section": section
+  "Priority": priority_id
+  "Type": type_id
+  "Automation Status": custom_automation_type
+  "Test Estimate": estimate
+  "References": refs
+
+  # Custom fields (prefix with custom_)
+  "Steps": custom_steps
+  "Expected Result": custom_expected
+  "Automation ID": custom_automation_id
+
+# Notes:
+# - case_id is used to identify existing cases for updates
+# - title is required for creating new cases
+# - Custom fields must match TestRail system names (e.g., custom_steps)
+# - Priority, type, and other enum fields should use IDs (1, 2, 3, etc.)
+# - Dates should be in ISO8601 format or epoch seconds
+
+# Example CSV with these mappings:
+#
+# Test ID,Test Title,Section,Priority,Type,Test Estimate,References
+# ,Login with valid credentials,Authentication,2,1,1m,REQ-123
+# ,Login with invalid password,Authentication,2,1,30s,REQ-123
+# 456,Updated existing test,API Tests,1,1,2m,REQ-124

@@ -1,0 +1,9 @@
+case_id,title,section,priority_id,type_id,estimate,refs
+,Login with valid credentials,Authentication/Login,2,1,1m,REQ-123
+,Login with invalid password,Authentication/Login,2,1,30s,REQ-123
+,Login with invalid username,Authentication/Login,2,1,30s,REQ-123
+,Logout successfully,Authentication/Logout,2,1,15s,REQ-124
+,API endpoint returns 200 OK,API/Health,1,1,10s,REQ-200
+,API handles rate limiting,API/Rate Limiting,1,1,1m,REQ-201
+,Database connection pool,Performance/Database,3,2,5m,REQ-300
+,Page load under 2 seconds,Performance/Frontend,3,2,2m,REQ-301

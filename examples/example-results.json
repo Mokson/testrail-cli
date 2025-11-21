@@ -1,0 +1,31 @@
+[
+  {
+    "test_id": 1001,
+    "status_id": 1,
+    "comment": "Test passed successfully",
+    "elapsed": "45s",
+    "version": "2.1.0"
+  },
+  {
+    "test_id": 1002,
+    "status_id": 5,
+    "comment": "Test failed: Login button not visible",
+    "defects": "BUG-456, BUG-457",
+    "elapsed": "1m",
+    "version": "2.1.0"
+  },
+  {
+    "test_id": 1003,
+    "status_id": 1,
+    "comment": "All assertions passed",
+    "elapsed": "30s",
+    "version": "2.1.0"
+  },
+  {
+    "test_id": 1004,
+    "status_id": 2,
+    "comment": "Test blocked: API endpoint unavailable",
+    "elapsed": "5s",
+    "version": "2.1.0"
+  }
+]

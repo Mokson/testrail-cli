@@ -1,0 +1,33 @@
+# TestRail CLI Configuration Example
+#
+# Copy this file to ~/.testrail-cli.yaml and update with your credentials
+# File permissions will be automatically set to 600 on POSIX systems
+
+profiles:
+  # Default profile (used when no --profile specified)
+  default:
+    url: https://your-org.testrail.io
+    email: your-email@example.com
+    password: your-api-key-here
+    verify: true      # TLS verification (recommended: true)
+    timeout: 30       # Request timeout in seconds
+
+  # Additional profiles for different environments
+  staging:
+    url: https://staging.testrail.io
+    email: staging-user@example.com
+    password: staging-api-key
+    verify: true
+    timeout: 30
+
+  production:
+    url: https://production.testrail.io
+    email: prod-user@example.com
+    password: prod-api-key
+    verify: true
+    timeout: 60
+
+# Usage:
+#   testrail projects list                    # Uses 'default' profile
+#   testrail --profile staging projects list  # Uses 'staging' profile
+#   testrail --profile production runs list   # Uses 'production' profile
