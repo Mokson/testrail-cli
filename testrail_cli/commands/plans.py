@@ -78,7 +78,7 @@ def add_plan(
         if description:
             kwargs["description"] = description
         if milestone_id:
-            kwargs["milestone_id"] = milestone_id
+            kwargs["milestone_id"] = str(milestone_id)
 
         plan = client.add_plan(project_id, name, **kwargs)
         output_result(plan, output, None)
@@ -105,7 +105,7 @@ def update_plan(
         if description:
             kwargs["description"] = description
         if milestone_id:
-            kwargs["milestone_id"] = milestone_id
+            kwargs["milestone_id"] = str(milestone_id)
 
         plan = client.update_plan(plan_id, **kwargs)
         output_result(plan, output, None)

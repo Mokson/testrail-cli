@@ -28,9 +28,9 @@ def list_results(
         if status_id:
             kwargs["status_id"] = parse_list(status_id)
         if limit:
-            kwargs["limit"] = limit
+            kwargs["limit"] = str(limit)  # type: ignore[assignment]
         if offset:
-            kwargs["offset"] = offset
+            kwargs["offset"] = str(offset)  # type: ignore[assignment]
 
         results = client.get_results(test_id, **kwargs)
         output_result(results, output, fields)
@@ -57,9 +57,9 @@ def list_results_for_case(
         if status_id:
             kwargs["status_id"] = parse_list(status_id)
         if limit:
-            kwargs["limit"] = limit
+            kwargs["limit"] = str(limit)  # type: ignore[assignment]
         if offset:
-            kwargs["offset"] = offset
+            kwargs["offset"] = str(offset)  # type: ignore[assignment]
 
         results = client.get_results_for_case(run_id, case_id, **kwargs)
         output_result(results, output, fields)
@@ -87,13 +87,13 @@ def list_results_for_run(
         if status_id:
             kwargs["status_id"] = parse_list(status_id)
         if created_after:
-            kwargs["created_after"] = parse_datetime(created_after)
+            kwargs["created_after"] = str(parse_datetime(created_after))  # type: ignore[assignment]
         if created_before:
-            kwargs["created_before"] = parse_datetime(created_before)
+            kwargs["created_before"] = str(parse_datetime(created_before))  # type: ignore[assignment]
         if limit:
-            kwargs["limit"] = limit
+            kwargs["limit"] = str(limit)  # type: ignore[assignment]
         if offset:
-            kwargs["offset"] = offset
+            kwargs["offset"] = str(offset)  # type: ignore[assignment]
 
         results = client.get_results_for_run(run_id, **kwargs)
         output_result(results, output, fields)
@@ -116,7 +116,7 @@ def add_result(
     client: TestRailClient = ctx.obj["client"]
 
     try:
-        kwargs = {"status_id": status_id}
+        kwargs = {"status_id": str(status_id)}
         if comment:
             kwargs["comment"] = comment
         if version:
@@ -148,7 +148,7 @@ def add_result_for_case(
     client: TestRailClient = ctx.obj["client"]
 
     try:
-        kwargs = {"status_id": status_id}
+        kwargs = {"status_id": str(status_id)}
         if comment:
             kwargs["comment"] = comment
         if version:

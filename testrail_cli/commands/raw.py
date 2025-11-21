@@ -75,7 +75,7 @@ def raw(
         # Make the call
         result = client.call(
             endpoint=endpoint,
-            method=method.upper(),
+            method=method.upper(),  # type: ignore[arg-type]
             params=params_dict if params_dict else None,
             data=data_dict if data_dict else None,
         )

@@ -26,9 +26,9 @@ def list_tests(
         if status_id:
             kwargs["status_id"] = parse_list(status_id)
         if limit:
-            kwargs["limit"] = limit
+            kwargs["limit"] = str(limit)  # type: ignore[assignment]
         if offset:
-            kwargs["offset"] = offset
+            kwargs["offset"] = str(offset)  # type: ignore[assignment]
 
         tests = client.get_tests(run_id, **kwargs)
         output_result(tests, output, fields)

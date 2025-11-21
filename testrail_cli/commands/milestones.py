@@ -68,11 +68,11 @@ def add_milestone(
         if description:
             kwargs["description"] = description
         if due_on:
-            kwargs["due_on"] = parse_datetime(due_on)
+            kwargs["due_on"] = str(parse_datetime(due_on))
         if parent_id:
-            kwargs["parent_id"] = parent_id
+            kwargs["parent_id"] = str(parent_id)
         if start_on:
-            kwargs["start_on"] = parse_datetime(start_on)
+            kwargs["start_on"] = str(parse_datetime(start_on))
 
         milestone = client.add_milestone(project_id, name, **kwargs)
         output_result(milestone, output, None)
@@ -101,11 +101,11 @@ def update_milestone(
         if description:
             kwargs["description"] = description
         if due_on:
-            kwargs["due_on"] = parse_datetime(due_on)
+            kwargs["due_on"] = str(parse_datetime(due_on))
         if is_completed is not None:
-            kwargs["is_completed"] = is_completed
+            kwargs["is_completed"] = str(is_completed)
         if start_on:
-            kwargs["start_on"] = parse_datetime(start_on)
+            kwargs["start_on"] = str(parse_datetime(start_on))
 
         milestone = client.update_milestone(milestone_id, **kwargs)
         output_result(milestone, output, None)

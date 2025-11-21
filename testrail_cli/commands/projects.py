@@ -63,9 +63,9 @@ def add_project(
         if announcement:
             kwargs["announcement"] = announcement
         if show_announcement is not None:
-            kwargs["show_announcement"] = show_announcement
+            kwargs["show_announcement"] = str(show_announcement)
         if suite_mode:
-            kwargs["suite_mode"] = suite_mode
+            kwargs["suite_mode"] = str(suite_mode)
 
         project = client.add_project(name, **kwargs)
         output_result(project, output, None)
@@ -93,9 +93,9 @@ def update_project(
         if announcement:
             kwargs["announcement"] = announcement
         if show_announcement is not None:
-            kwargs["show_announcement"] = show_announcement
+            kwargs["show_announcement"] = str(show_announcement)
         if is_completed is not None:
-            kwargs["is_completed"] = is_completed
+            kwargs["is_completed"] = str(is_completed)
 
         project = client.update_project(project_id, **kwargs)
         output_result(project, output, None)

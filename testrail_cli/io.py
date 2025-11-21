@@ -170,7 +170,7 @@ def filter_fields(data: Any, fields: list[str]) -> Any:
 
 
 def paginate_all(
-    fetch_func: Callable, limit: int = 250, offset: int = 0, **kwargs
+    fetch_func: Callable, limit: int = 250, offset: int = 0, **kwargs: Any
 ) -> list[dict[str, Any]]:
     """Paginate through all results using limit/offset.
 

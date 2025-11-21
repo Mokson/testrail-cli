@@ -128,7 +128,7 @@ def init_config(
     config_path = Path.home() / ".testrail-cli.yaml"
 
     # Load existing config if present
-    existing_config = {}
+    existing_config: dict[str, Any] = {}
     if config_path.exists():
         with open(config_path) as f:
             existing_config = yaml.safe_load(f) or {}

@@ -30,19 +30,19 @@ def list_runs(
     try:
         kwargs = {}
         if suite_id:
-            kwargs["suite_id"] = suite_id
+            kwargs["suite_id"] = str(suite_id)
         if milestone_id:
-            kwargs["milestone_id"] = milestone_id
+            kwargs["milestone_id"] = str(milestone_id)
         if created_after:
-            kwargs["created_after"] = parse_datetime(created_after)
+            kwargs["created_after"] = str(parse_datetime(created_after))
         if created_before:
-            kwargs["created_before"] = parse_datetime(created_before)
+            kwargs["created_before"] = str(parse_datetime(created_before))
         if is_completed is not None:
-            kwargs["is_completed"] = is_completed
+            kwargs["is_completed"] = str(is_completed)
         if limit:
-            kwargs["limit"] = limit
+            kwargs["limit"] = str(limit)
         if offset:
-            kwargs["offset"] = offset
+            kwargs["offset"] = str(offset)
 
         runs = client.get_runs(project_id, **kwargs)
         output_result(runs, output, fields)
@@ -86,19 +86,19 @@ def add_run(
     try:
         kwargs = {}
         if suite_id:
-            kwargs["suite_id"] = suite_id
+            kwargs["suite_id"] = str(suite_id)
         if name:
             kwargs["name"] = name
         if description:
             kwargs["description"] = description
         if milestone_id:
-            kwargs["milestone_id"] = milestone_id
+            kwargs["milestone_id"] = str(milestone_id)
         if assignedto_id:
-            kwargs["assignedto_id"] = assignedto_id
+            kwargs["assignedto_id"] = str(assignedto_id)
         if include_all is not None:
-            kwargs["include_all"] = include_all
+            kwargs["include_all"] = str(include_all)
         if case_ids:
-            kwargs["case_ids"] = [int(x) for x in parse_list(case_ids)]
+            kwargs["case_ids"] = str([int(x) for x in parse_list(case_ids)])
 
         run = client.add_run(project_id, **kwargs)
         output_result(run, output, None)
@@ -127,11 +127,11 @@ def update_run(
         if description:
             kwargs["description"] = description
         if milestone_id:
-            kwargs["milestone_id"] = milestone_id
+            kwargs["milestone_id"] = str(milestone_id)
         if include_all is not None:
-            kwargs["include_all"] = include_all
+            kwargs["include_all"] = str(include_all)
         if case_ids:
-            kwargs["case_ids"] = [int(x) for x in parse_list(case_ids)]
+            kwargs["case_ids"] = str([int(x) for x in parse_list(case_ids)])
 
         run = client.update_run(run_id, **kwargs)
         output_result(run, output, None)

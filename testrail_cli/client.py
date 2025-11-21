@@ -80,173 +80,173 @@ class TestRailClient:
             raise ValueError(f"Unsupported method: {method}")
 
     # Projects
-    def get_projects(self, is_completed: int | None = None) -> list:
-        return self.api.projects.get_projects(is_completed=is_completed)
+    def get_projects(self, is_completed: int | None = None) -> list[dict[str, Any]]:
+        return self.api.projects.get_projects(is_completed=is_completed)  # type: ignore[no-any-return]
 
-    def get_project(self, project_id: int) -> dict:
-        return self.api.projects.get_project(project_id)
+    def get_project(self, project_id: int) -> dict[str, Any]:
+        return self.api.projects.get_project(project_id)  # type: ignore[no-any-return]
 
-    def add_project(self, name: str, **kwargs) -> dict:
-        return self.api.projects.add_project(name, **kwargs)
+    def add_project(self, name: str, **kwargs: Any) -> dict[str, Any]:
+        return self.api.projects.add_project(name, **kwargs)  # type: ignore[no-any-return]
 
-    def update_project(self, project_id: int, **kwargs) -> dict:
-        return self.api.projects.update_project(project_id, **kwargs)
+    def update_project(self, project_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.projects.update_project(project_id, **kwargs)  # type: ignore[no-any-return]
 
-    def delete_project(self, project_id: int):
-        return self.api.projects.delete_project(project_id)
+    def delete_project(self, project_id: int) -> None:
+        return self.api.projects.delete_project(project_id)  # type: ignore[no-any-return]
 
     # Suites
-    def get_suites(self, project_id: int) -> list:
-        return self.api.suites.get_suites(project_id)
+    def get_suites(self, project_id: int) -> list[dict[str, Any]]:
+        return self.api.suites.get_suites(project_id)  # type: ignore[no-any-return]
 
-    def get_suite(self, suite_id: int) -> dict:
-        return self.api.suites.get_suite(suite_id)
+    def get_suite(self, suite_id: int) -> dict[str, Any]:
+        return self.api.suites.get_suite(suite_id)  # type: ignore[no-any-return]
 
-    def add_suite(self, project_id: int, name: str, **kwargs) -> dict:
-        return self.api.suites.add_suite(project_id, name, **kwargs)
+    def add_suite(self, project_id: int, name: str, **kwargs: Any) -> dict[str, Any]:
+        return self.api.suites.add_suite(project_id, name, **kwargs)  # type: ignore[no-any-return]
 
-    def update_suite(self, suite_id: int, **kwargs) -> dict:
-        return self.api.suites.update_suite(suite_id, **kwargs)
+    def update_suite(self, suite_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.suites.update_suite(suite_id, **kwargs)  # type: ignore[no-any-return]
 
-    def delete_suite(self, suite_id: int):
-        return self.api.suites.delete_suite(suite_id)
+    def delete_suite(self, suite_id: int) -> None:
+        return self.api.suites.delete_suite(suite_id)  # type: ignore[no-any-return]
 
     # Sections
-    def get_sections(self, project_id: int, suite_id: int | None = None) -> list:
-        return self.api.sections.get_sections(project_id, suite_id=suite_id)
+    def get_sections(self, project_id: int, suite_id: int | None = None) -> list[dict[str, Any]]:
+        return self.api.sections.get_sections(project_id, suite_id=suite_id)  # type: ignore[no-any-return]
 
-    def get_section(self, section_id: int) -> dict:
-        return self.api.sections.get_section(section_id)
+    def get_section(self, section_id: int) -> dict[str, Any]:
+        return self.api.sections.get_section(section_id)  # type: ignore[no-any-return]
 
-    def add_section(self, project_id: int, name: str, **kwargs) -> dict:
-        return self.api.sections.add_section(project_id, name, **kwargs)
+    def add_section(self, project_id: int, name: str, **kwargs: Any) -> dict[str, Any]:
+        return self.api.sections.add_section(project_id, name, **kwargs)  # type: ignore[no-any-return]
 
-    def update_section(self, section_id: int, **kwargs) -> dict:
-        return self.api.sections.update_section(section_id, **kwargs)
+    def update_section(self, section_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.sections.update_section(section_id, **kwargs)  # type: ignore[no-any-return]
 
-    def delete_section(self, section_id: int):
-        return self.api.sections.delete_section(section_id)
+    def delete_section(self, section_id: int) -> None:
+        return self.api.sections.delete_section(section_id)  # type: ignore[no-any-return]
 
     # Cases
-    def get_cases(self, project_id: int, **kwargs) -> list:
-        return self.api.cases.get_cases(project_id, **kwargs)
+    def get_cases(self, project_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.cases.get_cases(project_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_case(self, case_id: int) -> dict:
-        return self.api.cases.get_case(case_id)
+    def get_case(self, case_id: int) -> dict[str, Any]:
+        return self.api.cases.get_case(case_id)  # type: ignore[no-any-return]
 
-    def add_case(self, section_id: int, title: str, **kwargs) -> dict:
-        return self.api.cases.add_case(section_id, title, **kwargs)
+    def add_case(self, section_id: int, title: str, **kwargs: Any) -> dict[str, Any]:
+        return self.api.cases.add_case(section_id, title, **kwargs)  # type: ignore[no-any-return]
 
-    def update_case(self, case_id: int, **kwargs) -> dict:
-        return self.api.cases.update_case(case_id, **kwargs)
+    def update_case(self, case_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.cases.update_case(case_id, **kwargs)  # type: ignore[no-any-return]
 
-    def update_cases(self, suite_id: int, case_ids: list, **kwargs) -> list:
-        return self.api.cases.update_cases(suite_id, case_ids, **kwargs)
+    def update_cases(self, suite_id: int, case_ids: list[int], **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.cases.update_cases(suite_id, case_ids, **kwargs)  # type: ignore[no-any-return]
 
-    def delete_case(self, case_id: int, soft: int | None = None):
-        return self.api.cases.delete_case(case_id, soft=soft)
+    def delete_case(self, case_id: int, soft: int | None = None) -> None:
+        return self.api.cases.delete_case(case_id, soft=soft)  # type: ignore[no-any-return]
 
-    def delete_cases(self, suite_id: int, case_ids: list, soft: int | None = None):
-        return self.api.cases.delete_cases(suite_id, case_ids, soft=soft)
+    def delete_cases(self, suite_id: int, case_ids: list[int], soft: int | None = None) -> None:
+        return self.api.cases.delete_cases(suite_id, case_ids, soft=soft)  # type: ignore[no-any-return]
 
     # Runs
-    def get_runs(self, project_id: int, **kwargs) -> list:
-        return self.api.runs.get_runs(project_id, **kwargs)
+    def get_runs(self, project_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.runs.get_runs(project_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_run(self, run_id: int) -> dict:
-        return self.api.runs.get_run(run_id)
+    def get_run(self, run_id: int) -> dict[str, Any]:
+        return self.api.runs.get_run(run_id)  # type: ignore[no-any-return]
 
-    def add_run(self, project_id: int, **kwargs) -> dict:
-        return self.api.runs.add_run(project_id, **kwargs)
+    def add_run(self, project_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.runs.add_run(project_id, **kwargs)  # type: ignore[no-any-return]
 
-    def update_run(self, run_id: int, **kwargs) -> dict:
-        return self.api.runs.update_run(run_id, **kwargs)
+    def update_run(self, run_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.runs.update_run(run_id, **kwargs)  # type: ignore[no-any-return]
 
-    def close_run(self, run_id: int) -> dict:
-        return self.api.runs.close_run(run_id)
+    def close_run(self, run_id: int) -> dict[str, Any]:
+        return self.api.runs.close_run(run_id)  # type: ignore[no-any-return]
 
-    def delete_run(self, run_id: int):
-        return self.api.runs.delete_run(run_id)
+    def delete_run(self, run_id: int) -> None:
+        return self.api.runs.delete_run(run_id)  # type: ignore[no-any-return]
 
     # Plans
-    def get_plans(self, project_id: int, **kwargs) -> list:
-        return self.api.plans.get_plans(project_id, **kwargs)
+    def get_plans(self, project_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.plans.get_plans(project_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_plan(self, plan_id: int) -> dict:
-        return self.api.plans.get_plan(plan_id)
+    def get_plan(self, plan_id: int) -> dict[str, Any]:
+        return self.api.plans.get_plan(plan_id)  # type: ignore[no-any-return]
 
-    def add_plan(self, project_id: int, name: str, **kwargs) -> dict:
-        return self.api.plans.add_plan(project_id, name, **kwargs)
+    def add_plan(self, project_id: int, name: str, **kwargs: Any) -> dict[str, Any]:
+        return self.api.plans.add_plan(project_id, name, **kwargs)  # type: ignore[no-any-return]
 
-    def add_plan_entry(self, plan_id: int, suite_id: int, **kwargs) -> dict:
-        return self.api.plans.add_plan_entry(plan_id, suite_id, **kwargs)
+    def add_plan_entry(self, plan_id: int, suite_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.plans.add_plan_entry(plan_id, suite_id, **kwargs)  # type: ignore[no-any-return]
 
-    def update_plan(self, plan_id: int, **kwargs) -> dict:
-        return self.api.plans.update_plan(plan_id, **kwargs)
+    def update_plan(self, plan_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.plans.update_plan(plan_id, **kwargs)  # type: ignore[no-any-return]
 
-    def update_plan_entry(self, plan_id: int, entry_id: str, **kwargs) -> dict:
-        return self.api.plans.update_plan_entry(plan_id, entry_id, **kwargs)
+    def update_plan_entry(self, plan_id: int, entry_id: str, **kwargs: Any) -> dict[str, Any]:
+        return self.api.plans.update_plan_entry(plan_id, entry_id, **kwargs)  # type: ignore[no-any-return]
 
-    def close_plan(self, plan_id: int) -> dict:
-        return self.api.plans.close_plan(plan_id)
+    def close_plan(self, plan_id: int) -> dict[str, Any]:
+        return self.api.plans.close_plan(plan_id)  # type: ignore[no-any-return]
 
-    def delete_plan(self, plan_id: int):
-        return self.api.plans.delete_plan(plan_id)
+    def delete_plan(self, plan_id: int) -> None:
+        return self.api.plans.delete_plan(plan_id)  # type: ignore[no-any-return]
 
-    def delete_plan_entry(self, plan_id: int, entry_id: str):
-        return self.api.plans.delete_plan_entry(plan_id, entry_id)
+    def delete_plan_entry(self, plan_id: int, entry_id: str) -> None:
+        return self.api.plans.delete_plan_entry(plan_id, entry_id)  # type: ignore[no-any-return]
 
     # Tests
-    def get_tests(self, run_id: int, **kwargs) -> list:
-        return self.api.tests.get_tests(run_id, **kwargs)
+    def get_tests(self, run_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.tests.get_tests(run_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_test(self, test_id: int) -> dict:
-        return self.api.tests.get_test(test_id)
+    def get_test(self, test_id: int) -> dict[str, Any]:
+        return self.api.tests.get_test(test_id)  # type: ignore[no-any-return]
 
     # Results
-    def get_results(self, test_id: int, **kwargs) -> list:
-        return self.api.results.get_results(test_id, **kwargs)
+    def get_results(self, test_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.results.get_results(test_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_results_for_case(self, run_id: int, case_id: int, **kwargs) -> list:
-        return self.api.results.get_results_for_case(run_id, case_id, **kwargs)
+    def get_results_for_case(self, run_id: int, case_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.results.get_results_for_case(run_id, case_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_results_for_run(self, run_id: int, **kwargs) -> list:
-        return self.api.results.get_results_for_run(run_id, **kwargs)
+    def get_results_for_run(self, run_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.results.get_results_for_run(run_id, **kwargs)  # type: ignore[no-any-return]
 
-    def add_result(self, test_id: int, **kwargs) -> dict:
-        return self.api.results.add_result(test_id, **kwargs)
+    def add_result(self, test_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.results.add_result(test_id, **kwargs)  # type: ignore[no-any-return]
 
-    def add_result_for_case(self, run_id: int, case_id: int, **kwargs) -> dict:
-        return self.api.results.add_result_for_case(run_id, case_id, **kwargs)
+    def add_result_for_case(self, run_id: int, case_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.results.add_result_for_case(run_id, case_id, **kwargs)  # type: ignore[no-any-return]
 
-    def add_results(self, run_id: int, results: list) -> list:
-        return self.api.results.add_results(run_id, results)
+    def add_results(self, run_id: int, results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return self.api.results.add_results(run_id, results)  # type: ignore[no-any-return]
 
-    def add_results_for_cases(self, run_id: int, results: list) -> list:
-        return self.api.results.add_results_for_cases(run_id, results)
+    def add_results_for_cases(self, run_id: int, results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return self.api.results.add_results_for_cases(run_id, results)  # type: ignore[no-any-return]
 
     # Milestones
-    def get_milestones(self, project_id: int, **kwargs) -> list:
-        return self.api.milestones.get_milestones(project_id, **kwargs)
+    def get_milestones(self, project_id: int, **kwargs: Any) -> list[dict[str, Any]]:
+        return self.api.milestones.get_milestones(project_id, **kwargs)  # type: ignore[no-any-return]
 
-    def get_milestone(self, milestone_id: int) -> dict:
-        return self.api.milestones.get_milestone(milestone_id)
+    def get_milestone(self, milestone_id: int) -> dict[str, Any]:
+        return self.api.milestones.get_milestone(milestone_id)  # type: ignore[no-any-return]
 
-    def add_milestone(self, project_id: int, name: str, **kwargs) -> dict:
-        return self.api.milestones.add_milestone(project_id, name, **kwargs)
+    def add_milestone(self, project_id: int, name: str, **kwargs: Any) -> dict[str, Any]:
+        return self.api.milestones.add_milestone(project_id, name, **kwargs)  # type: ignore[no-any-return]
 
-    def update_milestone(self, milestone_id: int, **kwargs) -> dict:
-        return self.api.milestones.update_milestone(milestone_id, **kwargs)
+    def update_milestone(self, milestone_id: int, **kwargs: Any) -> dict[str, Any]:
+        return self.api.milestones.update_milestone(milestone_id, **kwargs)  # type: ignore[no-any-return]
 
-    def delete_milestone(self, milestone_id: int):
-        return self.api.milestones.delete_milestone(milestone_id)
+    def delete_milestone(self, milestone_id: int) -> None:
+        return self.api.milestones.delete_milestone(milestone_id)  # type: ignore[no-any-return]
 
     # Users
-    def get_users(self) -> list:
-        return self.api.users.get_users()
+    def get_users(self) -> list[dict[str, Any]]:
+        return self.api.users.get_users()  # type: ignore[no-any-return]
 
-    def get_user(self, user_id: int) -> dict:
-        return self.api.users.get_user(user_id)
+    def get_user(self, user_id: int) -> dict[str, Any]:
+        return self.api.users.get_user(user_id)  # type: ignore[no-any-return]
 
-    def get_user_by_email(self, email: str) -> dict:
-        return self.api.users.get_user_by_email(email)
+    def get_user_by_email(self, email: str) -> dict[str, Any]:
+        return self.api.users.get_user_by_email(email)  # type: ignore[no-any-return]

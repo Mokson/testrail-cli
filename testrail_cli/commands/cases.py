@@ -43,13 +43,13 @@ def list_cases(
         if updated_before:
             kwargs["updated_before"] = parse_datetime(updated_before)
         if priority_id:
-            kwargs["priority_id"] = [int(x) for x in parse_list(priority_id)]
+            kwargs["priority_id"] = parse_list(priority_id)  # type: ignore[assignment]
         if type_id:
-            kwargs["type_id"] = [int(x) for x in parse_list(type_id)]
+            kwargs["type_id"] = parse_list(type_id)  # type: ignore[assignment]
         if limit:
-            kwargs["limit"] = limit
+            kwargs["limit"] = str(limit)  # type: ignore[assignment]
         if offset:
-            kwargs["offset"] = offset
+            kwargs["offset"] = str(offset)  # type: ignore[assignment]
 
         cases = client.get_cases(project_id, **kwargs)
         output_result(cases, output, fields)
@@ -92,15 +92,15 @@ def add_case(
     try:
         kwargs = {}
         if template_id:
-            kwargs["template_id"] = template_id
+            kwargs["template_id"] = str(template_id)
         if type_id:
-            kwargs["type_id"] = type_id
+            kwargs["type_id"] = str(type_id)
         if priority_id:
-            kwargs["priority_id"] = priority_id
+            kwargs["priority_id"] = str(priority_id)
         if estimate:
             kwargs["estimate"] = estimate
         if refs:
-            kwargs["refs"] = refs
+            kwargs["refs"] = str(refs)
 
         case = client.add_case(section_id, title, **kwargs)
         output_result(case, output, None)
@@ -128,15 +128,15 @@ def update_case(
         if title:
             kwargs["title"] = title
         if template_id:
-            kwargs["template_id"] = template_id
+            kwargs["template_id"] = str(template_id)
         if type_id:
-            kwargs["type_id"] = type_id
+            kwargs["type_id"] = str(type_id)
         if priority_id:
-            kwargs["priority_id"] = priority_id
+            kwargs["priority_id"] = str(priority_id)
         if estimate:
             kwargs["estimate"] = estimate
         if refs:
-            kwargs["refs"] = refs
+            kwargs["refs"] = str(refs)
 
         case = client.update_case(case_id, **kwargs)
         output_result(case, output, None)
@@ -176,6 +176,13 @@ def import_cases(
     suite_name: str | None = typer.Option(None, help="Suite name (alternative to suite_id)"),
     section_path: str | None = typer.Option(None, help="Default section path (e.g., 'Parent/Sub')"),
     mapping: str | None = typer.Option(None, help="Path to mapping YAML/JSON file"),
+    template_id: int | None = typer.Option(
+        None, help="Template ID to apply to all imported cases (overrides CSV)"
+    ),
+    steps_field: str | None = typer.Option(
+        None,
+        help="Target field for steps (e.g., custom_steps_separated, custom_steps, custom_gherkin). Overrides CSV.",
+    ),
     create_missing_sections: bool = typer.Option(False, help="Create sections if missing"),
     chunk_size: int = typer.Option(50, help="Batch size for API calls"),
 ) -> None:
@@ -193,6 +200,8 @@ def import_cases(
             suite_name=suite_name,
             section_path=section_path,
             mapping_path=mapping,
+            template_id=template_id,
+            steps_field=steps_field,
             create_missing_sections=create_missing_sections,
             chunk_size=chunk_size,
         )

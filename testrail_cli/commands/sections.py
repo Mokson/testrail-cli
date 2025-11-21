@@ -63,7 +63,7 @@ def add_section(
         if parent_id:
             kwargs["parent_id"] = parent_id
         if description:
-            kwargs["description"] = description
+            kwargs["description"] = str(description)  # type: ignore[assignment]
 
         section = client.add_section(project_id, name, **kwargs)
         output_result(section, output, None)
