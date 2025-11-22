@@ -11,6 +11,160 @@ from testrail_cli.commands.cases import app
 runner = CliRunner()
 
 
+def test_list_cases():
+    """Test listing cases."""
+    mock_client = MagicMock(spec=TestRailClient)
+    mock_client.get_cases.return_value = [{"id": 1, "title": "Case 1"}]
+
+    result = runner.invoke(
+        app,
+        ["list", "--project-id", "1"],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.get_cases.assert_called_once()
+    args, kwargs = mock_client.get_cases.call_args
+    assert args == (1,)
+    assert "Case 1" in result.stdout
+
+
+def test_list_cases_by_ids():
+    """Test listing cases by IDs."""
+    mock_client = MagicMock(spec=TestRailClient)
+    mock_client.get_case.return_value = {"id": 1, "title": "Case 1"}
+
+    result = runner.invoke(
+        app,
+        ["list", "--case-ids", "1,2"],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    assert mock_client.get_case.call_count == 2
+    mock_client.get_case.assert_any_call(1)
+    mock_client.get_case.assert_any_call(2)
+
+
+def test_list_cases_filters():
+    """Test listing cases with filters."""
+    mock_client = MagicMock(spec=TestRailClient)
+    mock_client.get_cases.return_value = []
+
+    result = runner.invoke(
+        app,
+        [
+            "list",
+            "--project-id",
+            "1",
+            "--suite-id",
+            "2",
+            "--section-id",
+            "3",
+            "--created-after",
+            "1600000000",
+            "--priority-id",
+            "1,2",
+        ],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.get_cases.assert_called_once()
+    args, kwargs = mock_client.get_cases.call_args
+    assert args == (1,)
+    assert kwargs["suite_id"] == 2
+    assert kwargs["section_id"] == 3
+    assert kwargs["created_after"] == 1600000000
+    assert kwargs["priority_id"] == ["1", "2"]
+
+
+def test_get_case():
+    """Test getting a specific case."""
+    mock_client = MagicMock(spec=TestRailClient)
+    mock_client.get_case.return_value = {"id": 1, "title": "Case 1"}
+
+    result = runner.invoke(
+        app,
+        ["get", "1"],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.get_case.assert_called_once_with(1)
+    assert "Case 1" in result.stdout
+
+
+def test_add_case():
+    """Test adding a case."""
+    mock_client = MagicMock(spec=TestRailClient)
+    mock_client.add_case.return_value = {"id": 1, "title": "New Case"}
+
+    result = runner.invoke(
+        app,
+        ["add", "--section-id", "1", "--title", "New Case"],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.add_case.assert_called_once_with(1, "New Case")
+    assert "New Case" in result.stdout
+
+
+def test_add_case_optional_args():
+    """Test adding a case with optional arguments."""
+    mock_client = MagicMock(spec=TestRailClient)
+    mock_client.add_case.return_value = {"id": 1, "title": "New Case"}
+
+    result = runner.invoke(
+        app,
+        [
+            "add",
+            "--section-id",
+            "1",
+            "--title",
+            "New Case",
+            "--template-id",
+            "2",
+            "--type-id",
+            "3",
+            "--priority-id",
+            "4",
+            "--estimate",
+            "1h",
+            "--refs",
+            "REF-1",
+        ],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.add_case.assert_called_once()
+    args, kwargs = mock_client.add_case.call_args
+    assert args == (1, "New Case")
+    assert kwargs["template_id"] == "2"
+    assert kwargs["type_id"] == "3"
+    assert kwargs["priority_id"] == "4"
+    assert kwargs["estimate"] == "1h"
+    assert kwargs["refs"] == "REF-1"
+
+
+def test_update_case():
+    """Test updating a case."""
+    mock_client = MagicMock(spec=TestRailClient)
+    mock_client.update_case.return_value = {"id": 1, "title": "Updated Case"}
+
+    result = runner.invoke(
+        app,
+        ["update", "1", "--title", "Updated Case"],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.update_case.assert_called_once_with(1, title="Updated Case")
+    assert "Updated Case" in result.stdout
+
+
 def test_update_case_json_file(tmp_path):
     """Test updating a case using a JSON file."""
     # Create a dummy JSON file
@@ -31,10 +185,6 @@ def test_update_case_json_file(tmp_path):
         ["update", "1", "--json", str(json_file)],
         obj={"client": mock_client},
     )
-
-    if result.exit_code != 0:
-        print(result.stdout)
-        print(result.exception)
 
     assert result.exit_code == 0
     mock_client.update_case.assert_called_once()
@@ -60,10 +210,6 @@ def test_update_case_json_stdin():
         obj={"client": mock_client},
     )
 
-    if result.exit_code != 0:
-        print(result.stdout)
-        print(result.exception)
-
     assert result.exit_code == 0
     mock_client.update_case.assert_called_once()
     call_args = mock_client.update_case.call_args
@@ -73,7 +219,6 @@ def test_update_case_json_stdin():
 
 def test_update_case_arg_priority():
     """Test that CLI args override JSON values."""
-    # Create a dummy JSON file
     import os
     import tempfile
 
@@ -99,3 +244,32 @@ def test_update_case_arg_priority():
 
     finally:
         os.remove(tmp_path)
+
+
+def test_delete_case():
+    """Test deleting a case."""
+    mock_client = MagicMock(spec=TestRailClient)
+
+    result = runner.invoke(
+        app,
+        ["delete", "1", "--yes"],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.delete_case.assert_called_once_with(1, soft=None)
+    assert "deleted successfully" in result.stdout
+
+
+def test_delete_case_soft():
+    """Test soft deleting a case."""
+    mock_client = MagicMock(spec=TestRailClient)
+
+    result = runner.invoke(
+        app,
+        ["delete", "1", "--soft", "1", "--yes"],
+        obj={"client": mock_client},
+    )
+
+    assert result.exit_code == 0
+    mock_client.delete_case.assert_called_once_with(1, soft=1)

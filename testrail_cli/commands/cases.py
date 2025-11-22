@@ -92,13 +92,16 @@ def get_case(
 @app.command("add")
 def add_case(
     ctx: typer.Context,
-    section_id: int = typer.Option(..., help="Section ID"),
-    title: str = typer.Option(..., help="Case title"),
+    section_id: int | None = typer.Option(None, help="Section ID (required if not in JSON)"),
+    title: str | None = typer.Option(None, help="Case title (required if not in JSON)"),
     template_id: int | None = typer.Option(None, help="Template ID"),
     type_id: int | None = typer.Option(None, help="Type ID"),
     priority_id: int | None = typer.Option(None, help="Priority ID"),
     estimate: str | None = typer.Option(None, help="Estimate (e.g., '30s', '1m', '2h')"),
     refs: str | None = typer.Option(None, help="References (comma-separated)"),
+    json_file: str | None = typer.Option(
+        None, "--json", "--file", help="JSON file path or '-' for stdin"
+    ),
     output: str = typer.Option("json", help="Output format (json, table, raw)"),
 ) -> None:
     """Create a new test case."""
@@ -106,6 +109,20 @@ def add_case(
 
     try:
         kwargs = {}
+
+        if json_file:
+            if json_file == "-":
+                data = json.load(sys.stdin)
+            else:
+                with open(json_file, encoding="utf-8") as f:
+                    data = json.load(f)
+            kwargs.update(data)
+
+        # CLI options override JSON
+        if section_id is not None:
+            kwargs["section_id"] = section_id
+        if title is not None:
+            kwargs["title"] = title
         if template_id:
             kwargs["template_id"] = str(template_id)
         if type_id:
@@ -117,7 +134,19 @@ def add_case(
         if refs:
             kwargs["refs"] = str(refs)
 
-        case = client.add_case(section_id, title, **kwargs)
+        # Validation
+        if "section_id" not in kwargs:
+            typer.echo("Error: Missing option '--section-id' (or 'section_id' in JSON).", err=True)
+            raise typer.Exit(code=1)
+        if "title" not in kwargs:
+            typer.echo("Error: Missing option '--title' (or 'title' in JSON).", err=True)
+            raise typer.Exit(code=1)
+
+        # Extract required args
+        final_section_id = int(kwargs.pop("section_id"))
+        final_title = str(kwargs.pop("title"))
+
+        case = client.add_case(final_section_id, final_title, **kwargs)
         output_result(case, output, None)
     except Exception as e:
         handle_api_error(e)

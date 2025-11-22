@@ -137,6 +137,9 @@ testrail cases add \
   --estimate "5m" \
   --refs "JIRA-123"
 
+# Add a new test case using a JSON file
+testrail cases add --json new_case.json
+
 # Update existing test case
 testrail cases update 123 --title "Updated test title" --priority-id 1
 
